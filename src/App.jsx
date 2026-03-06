@@ -1,0 +1,898 @@
+import { useState, useRef, useCallback } from "react";
+
+const FONTS = `@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');`;
+
+const css = `
+  ${FONTS}
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --sand:   #f5f0e8;
+    --cream:  #faf7f2;
+    --ink:    #1a1208;
+    --brown:  #3d2b1f;
+    --rust:   #c94f1e;
+    --orange: #e8732a;
+    --yellow: #f5c842;
+    --teal:   #1d7a6e;
+    --muted:  #8c7b6b;
+    --border: #d9cebc;
+    --white:  #ffffff;
+    --ff: 'Playfair Display', Georgia, serif;
+    --fm: 'Space Mono', monospace;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  body {
+    background: var(--cream); color: var(--ink);
+    font-family: var(--fm);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  body::after {
+    content: ''; position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  input, select, button { -webkit-appearance: none; appearance: none; font-family: inherit; border-radius: 0; }
+  input[type="number"] { -moz-appearance: textfield; }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+  /* ─── HEADER ─── */
+  .hdr {
+    padding: calc(var(--safe-top) + 1rem) 1.5rem 1rem;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1.5px solid var(--border);
+    position: sticky; top: 0; z-index: 200;
+    background: rgba(250,247,242,0.94);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  }
+  .logo { font-family: var(--ff); font-size: 1.4rem; font-weight: 900; letter-spacing: -0.03em; color: var(--ink); text-decoration: none; }
+  .logo em { font-style: italic; color: var(--rust); }
+  .hdr-right { display: flex; align-items: center; gap: 0.6rem; }
+  .hdr-pill { font-family: var(--fm); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; background: var(--yellow); color: var(--ink); padding: 0.22rem 0.6rem; font-weight: 700; border: 1.5px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); }
+  .hdr-back { font-family: var(--fm); font-size: 0.7rem; background: transparent; border: 1.5px solid var(--border); color: var(--muted); padding: 0.4rem 0.8rem; cursor: pointer; transition: all .15s; }
+  .hdr-back:hover { border-color: var(--rust); color: var(--rust); }
+
+  /* ─── MARQUEE ─── */
+  .marquee-wrap {
+    background: var(--ink); color: var(--yellow);
+    padding: 0.65rem 0; overflow: hidden;
+    border-bottom: 2px solid var(--ink);
+  }
+  .marquee-track { display: flex; white-space: nowrap; animation: marquee 24s linear infinite; }
+  .marquee-track span { font-family: var(--ff); font-size: 0.9rem; font-style: italic; padding: 0 1.8rem; flex-shrink: 0; }
+  .marquee-track .dot { color: var(--rust); font-style: normal; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ─── HERO AREA ─── */
+  .hero-wrap { max-width: 700px; margin: 0 auto; padding: 3rem 1.5rem 0; position: relative; z-index: 1; }
+  .hero-eyebrow {
+    font-family: var(--fm); font-size: 0.6rem; color: var(--rust);
+    letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .hero-eyebrow::before { content: '✦'; font-size: 0.5rem; }
+  .hero-h1 {
+    font-family: var(--ff);
+    font-size: clamp(2.8rem, 9vw, 5rem);
+    font-weight: 900; line-height: 1.0; letter-spacing: -0.04em;
+    margin-bottom: 1.2rem; color: var(--ink);
+  }
+  .hero-h1 .hop {
+    display: inline-block;
+    background: var(--ink); color: var(--yellow);
+    padding: 0 0.1em; transform: rotate(-1.5deg);
+  }
+  .hero-h1 em { font-style: italic; color: var(--rust); }
+  .hero-desc { font-size: 0.85rem; line-height: 1.8; color: var(--brown); max-width: 480px; margin-bottom: 2rem; }
+  .hero-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 2.5rem; }
+  .pill {
+    font-family: var(--fm); font-size: 0.6rem; font-weight: 700;
+    padding: 0.28rem 0.7rem; border: 1.5px solid var(--border); color: var(--brown); background: var(--white);
+  }
+  .pill.accent { background: var(--yellow); border-color: var(--yellow); color: var(--ink); }
+
+  /* ─── FORM CARD ─── */
+  .form-wrap { max-width: 700px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+  .fcard {
+    background: var(--white); border: 1.5px solid var(--ink);
+    box-shadow: 5px 6px 0 var(--ink); padding: 1.8rem;
+    position: relative; margin-top: 0.5rem;
+  }
+  .fcard-label {
+    font-family: var(--fm); font-size: 0.55rem; color: var(--muted);
+    letter-spacing: 0.12em; text-transform: uppercase;
+    position: absolute; top: -0.52rem; left: 1.1rem;
+    background: var(--white); padding: 0 0.4rem;
+  }
+  .fgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 1rem; }
+  .fg { display: flex; flex-direction: column; gap: 0.3rem; }
+  .fg.full { grid-column: 1/-1; }
+  .fg label { font-family: var(--fm); font-size: 0.57rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .fg input, .fg select {
+    background: var(--sand); border: 1.5px solid var(--border);
+    padding: 0.75rem 0.9rem; color: var(--ink);
+    font-family: var(--ff); font-size: 0.95rem;
+    outline: none; width: 100%; min-height: 46px;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .fg input:focus, .fg select:focus { border-color: var(--rust); box-shadow: 2px 2px 0 var(--rust); }
+  .fg input::placeholder { color: var(--muted); font-style: italic; }
+  .fg select { cursor: pointer; }
+  .fg select option { background: var(--sand); }
+  .fg-hint { font-family: var(--fm); font-size: 0.56rem; color: var(--muted); line-height: 1.5; margin-top: 0.15rem; opacity: 0.75; }
+  .fdivider { border: none; border-top: 1.5px solid var(--border); margin: 1rem 0; }
+
+  /* stops */
+  .stops-label { font-family: var(--fm); font-size: 0.57rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .stops-row { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .schip {
+    font-family: var(--fm); font-size: 0.78rem;
+    padding: 0.4rem 0.9rem; border: 1.5px solid var(--border);
+    background: var(--sand); color: var(--muted);
+    cursor: pointer; transition: all .12s; user-select: none;
+    min-height: 38px; display: flex; align-items: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .schip:active { transform: translate(1px,1px); }
+  .schip.on { background: var(--rust); border-color: var(--ink); color: #fff; font-weight: 700; box-shadow: 2px 2px 0 var(--ink); }
+  .custom-row { display: flex; gap: 0.5rem; margin-top: 0.5rem; align-items: center; }
+  .custom-row input { background: var(--sand); border: 1.5px solid var(--border); padding: 0.4rem 0.7rem; color: var(--ink); font-family: var(--fm); font-size: 0.85rem; outline: none; width: 70px; min-height: 38px; }
+  .stops-hint { font-family: var(--fm); font-size: 0.56rem; color: var(--muted); margin-top: 0.4rem; font-style: italic; opacity: 0.75; }
+
+  /* generate button */
+  .btn-gen {
+    width: 100%; background: var(--ink); color: var(--sand);
+    border: 1.5px solid var(--ink); padding: 1rem 1.5rem;
+    font-family: var(--ff); font-size: 1.05rem; font-weight: 700;
+    cursor: pointer; margin-top: 0.8rem;
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    min-height: 54px; transition: all .15s; position: relative;
+    -webkit-tap-highlight-color: transparent; letter-spacing: -0.01em;
+  }
+  .btn-gen::after { content: ''; position: absolute; inset: 4px -4px -4px 4px; background: var(--rust); z-index: -1; transition: all .15s; }
+  .btn-gen:hover::after { inset: 5px -5px -5px 5px; }
+  .btn-gen:active { transform: translate(3px,3px); }
+  .btn-gen:active::after { inset: 1px -1px -1px 1px; }
+  .btn-gen:disabled { opacity: 0.38; cursor: not-allowed; transform: none; }
+  .btn-gen:disabled::after { display: none; }
+
+  /* ─── LOADING ─── */
+  .loading-wrap { max-width: 700px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+  .loading-card { background: var(--white); border: 1.5px solid var(--ink); box-shadow: 5px 6px 0 var(--ink); padding: 3rem 2rem; text-align: center; }
+  .spinner { width: 34px; height: 34px; border: 2px solid var(--border); border-top-color: var(--rust); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 1.4rem; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-title { font-family: var(--ff); font-size: 1.2rem; font-weight: 700; color: var(--ink); margin-bottom: 0.4rem; }
+  .loading-sub { font-family: var(--fm); font-size: 0.68rem; color: var(--muted); font-style: italic; }
+
+  /* ─── RESULT ─── */
+  .result-wrap { max-width: 800px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+
+  .trip-header {
+    padding: 2rem 0 1.2rem;
+    border-bottom: 1.5px solid var(--border);
+    margin-bottom: 1.2rem;
+  }
+  .trip-eyebrow { font-family: var(--fm); font-size: 0.58rem; color: var(--rust); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem; }
+  .trip-eyebrow::before { content: '✦'; font-size: 0.45rem; }
+  .trip-title { font-family: var(--ff); font-size: clamp(1.8rem, 5vw, 2.6rem); font-weight: 900; line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 0.8rem; }
+  .trip-title em { font-style: italic; color: var(--rust); }
+  .trip-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .trip-chip { font-family: var(--fm); font-size: 0.58rem; background: var(--sand); border: 1.5px solid var(--border); color: var(--muted); padding: 0.22rem 0.6rem; }
+
+  /* budget bar */
+  .budget-bar {
+    background: var(--ink); color: var(--sand);
+    border: 1.5px solid var(--ink); box-shadow: 4px 5px 0 var(--rust);
+    padding: 1.1rem 1.4rem; margin-bottom: 0.8rem;
+    display: grid; grid-template-columns: 1fr auto 1fr auto 1fr;
+    align-items: center; gap: 0.5rem;
+  }
+  .bitem { }
+  .blabel { font-family: var(--fm); font-size: 0.52rem; color: rgba(245,240,232,.45); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.2rem; }
+  .bvalue { font-family: var(--ff); font-size: 1.3rem; font-weight: 900; letter-spacing: -0.03em; color: var(--sand); }
+  .bvalue.y { color: var(--yellow); }
+  .bvalue.t { color: #7fd8c8; }
+  .bdivider { width: 1px; height: 36px; background: rgba(245,240,232,.12); }
+
+  /* regen bar */
+  .regen-bar {
+    background: #fffbf0; border: 1.5px solid var(--yellow);
+    border-left: 3px solid var(--orange);
+    padding: 0.85rem 1rem; margin-bottom: 1rem;
+    display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; flex-wrap: wrap;
+  }
+  .regen-info { font-family: var(--fm); font-size: 0.63rem; color: var(--brown); line-height: 1.55; flex: 1; }
+  .regen-info strong { color: var(--teal); }
+  .btn-regen {
+    background: var(--yellow); border: 1.5px solid var(--ink); color: var(--ink);
+    padding: 0.5rem 1rem; font-family: var(--fm); font-size: 0.7rem;
+    cursor: pointer; box-shadow: 2px 2px 0 var(--ink); font-weight: 700;
+    white-space: nowrap; min-height: 36px; transition: all .12s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-regen:active { transform: translate(2px,2px); box-shadow: none; }
+  .btn-regen:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ─── DAY CARDS ─── */
+  .day-card {
+    background: var(--white); border: 1.5px solid var(--border);
+    margin-bottom: 0.5rem; overflow: hidden;
+    animation: fadeUp .35s ease both;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .day-card:hover { border-color: var(--muted); }
+  .day-card.locked { border-color: var(--teal); box-shadow: 3px 4px 0 var(--teal); }
+  .day-card.drag-over { border-color: var(--rust); border-style: dashed; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .day-head {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.9rem 1rem; cursor: pointer;
+    user-select: none; -webkit-user-select: none;
+    min-height: 54px; transition: background .1s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .day-head:active { background: var(--sand); }
+  .day-card.open .day-head { border-bottom: 1.5px solid var(--border); background: var(--sand); }
+
+  .drag-h { color: var(--muted); opacity: 0.35; font-size: 0.85rem; cursor: grab; flex-shrink: 0; touch-action: none; min-width: 22px; text-align: center; -webkit-tap-highlight-color: transparent; }
+  .drag-h:active { opacity: 1; cursor: grabbing; }
+
+  .day-num {
+    font-family: var(--fm); font-size: 0.55rem; letter-spacing: 0.06em;
+    color: var(--rust); background: rgba(201,79,30,.08);
+    border: 1px solid rgba(201,79,30,.2);
+    padding: 0.15rem 0.45rem; flex-shrink: 0; white-space: nowrap;
+  }
+  .day-card.locked .day-num { color: var(--teal); background: rgba(29,122,110,.08); border-color: rgba(29,122,110,.25); }
+
+  .day-place {
+    font-family: var(--fm); font-size: 0.62rem; color: var(--muted);
+    flex-shrink: 0; white-space: nowrap; display: none;
+  }
+  @media (min-width: 480px) { .day-place { display: block; } }
+
+  .day-name { font-family: var(--ff); font-weight: 700; font-size: 0.9rem; letter-spacing: -0.02em; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .day-cost { font-family: var(--fm); font-size: 0.68rem; color: var(--orange); flex-shrink: 0; white-space: nowrap; font-weight: 700; }
+
+  .btn-lock {
+    background: none; border: 1px solid var(--border);
+    padding: 0.18rem 0.4rem; font-size: 0.58rem; cursor: pointer;
+    transition: all .12s; color: var(--muted); font-family: var(--fm);
+    white-space: nowrap; flex-shrink: 0; min-height: 28px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-lock.on { background: rgba(29,122,110,.08); border-color: var(--teal); color: var(--teal); }
+
+  .chev { color: var(--muted); font-size: 0.5rem; transition: transform .2s; flex-shrink: 0; }
+  .day-card.open .chev { transform: rotate(180deg); }
+
+  /* day body */
+  .day-body { padding: 1.1rem; }
+  .dsec { margin-bottom: 1rem; }
+  .dsec:last-child { margin-bottom: 0; }
+  .dsec-title { font-family: var(--fm); font-size: 0.52rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.35rem; }
+  .dsec-body { font-size: 0.88rem; line-height: 1.72; color: var(--brown); }
+  .dsec-price { font-family: var(--fm); font-size: 0.65rem; font-weight: 700; color: var(--rust); margin-top: 0.25rem; }
+
+  .transport-block {
+    background: #fffbf0; border: 1.5px solid rgba(245,200,66,.5);
+    border-left: 3px solid var(--yellow);
+    padding: 0.75rem 0.9rem; margin-bottom: 1rem;
+  }
+  .transport-block .dsec-title { color: var(--orange); }
+  .transport-block .dsec-body { color: var(--ink); }
+
+  /* budget on track */
+  .on-track {
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    font-family: var(--fm); font-size: 0.58rem; color: var(--teal); font-weight: 700;
+    background: rgba(29,122,110,.06); border: 1px solid rgba(29,122,110,.2);
+    padding: 0.2rem 0.5rem; margin-top: 0.4rem;
+  }
+
+  /* ─── TIPS ─── */
+  .tips-card {
+    background: var(--sand); border: 1.5px solid var(--border);
+    box-shadow: 3px 4px 0 var(--border);
+    padding: 1.2rem 1.4rem; margin-top: 1rem;
+  }
+  .tips-title { font-family: var(--fm); font-size: 0.58rem; color: var(--rust); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.8rem; }
+  .tip { display: flex; gap: 0.6rem; margin-bottom: 0.6rem; font-size: 0.82rem; line-height: 1.65; color: var(--brown); }
+  .tip-arr { color: var(--rust); flex-shrink: 0; font-family: var(--fm); font-size: 0.78rem; }
+
+  /* ─── HOW IT WORKS ─── */
+  .how-section { max-width: 700px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+  .sec-eyebrow { font-family: var(--fm); font-size: 0.58rem; color: var(--rust); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.7rem; display: flex; align-items: center; gap: 0.5rem; }
+  .sec-eyebrow::before { content: ''; width: 16px; height: 1.5px; background: var(--rust); }
+  .sec-title { font-family: var(--ff); font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 900; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 0.6rem; }
+  .sec-sub { font-size: 0.82rem; color: var(--muted); line-height: 1.8; margin-bottom: 2rem; }
+
+  .steps-grid { display: grid; grid-template-columns: 1fr 1fr; border: 1.5px solid var(--ink); overflow: hidden; }
+  .step { padding: 1.5rem; border-right: 1.5px solid var(--ink); border-bottom: 1.5px solid var(--ink); background: var(--cream); transition: background .2s; }
+  .step:nth-child(2n) { border-right: none; }
+  .step:nth-child(3), .step:nth-child(4) { border-bottom: none; }
+  .step:hover { background: var(--sand); }
+  .step-num { font-family: var(--ff); font-size: 2rem; font-weight: 900; color: var(--border); line-height: 1; margin-bottom: 0.7rem; }
+  .step-ico { font-size: 1.3rem; margin-bottom: 0.5rem; }
+  .step h3 { font-family: var(--ff); font-size: 0.92rem; font-weight: 700; margin-bottom: 0.3rem; color: var(--ink); }
+  .step p { font-size: 0.72rem; color: var(--muted); line-height: 1.65; }
+
+  /* ─── AFFILIATES ─── */
+  .aff-section { max-width: 700px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+  .aff-title { font-family: var(--fm); font-size: 0.58rem; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem; }
+  .aff-title::after { content: ''; flex: 1; height: 1.5px; background: var(--border); }
+  .aff-cat-label { font-family: var(--fm); font-size: 0.54rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; margin-top: 0.2rem; }
+  .aff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.9rem; }
+  @media (min-width: 560px) { .aff-grid { grid-template-columns: 1fr 1fr 1fr; } }
+  .aff-card {
+    background: var(--white); border: 1.5px solid var(--border);
+    border-left: 3px solid var(--ac, var(--rust));
+    padding: 0.9rem 1rem; text-decoration: none;
+    display: flex; flex-direction: column; gap: 0.3rem;
+    transition: box-shadow .12s, border-color .12s;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .aff-card:hover { border-color: var(--ac, var(--rust)); box-shadow: 3px 3px 0 var(--ac, var(--rust)); }
+  .aff-card:active { transform: translate(1px,1px); box-shadow: none; }
+  .aff-ico { font-size: 1.1rem; }
+  .aff-name { font-family: var(--ff); font-weight: 700; font-size: 0.85rem; color: var(--ink); }
+  .aff-desc { font-family: var(--fm); font-size: 0.6rem; color: var(--muted); line-height: 1.4; }
+  .aff-cta { font-family: var(--fm); font-size: 0.6rem; font-weight: 700; margin-top: 0.1rem; }
+  .aff-note { font-family: var(--fm); font-size: 0.54rem; color: var(--muted); opacity: 0.5; text-align: center; margin-top: 0.4rem; }
+
+  /* ─── DISCLAIMER ─── */
+  .disclaimer {
+    background: #fffbf0; border: 1.5px solid rgba(245,200,66,.4);
+    border-left: 3px solid var(--yellow); padding: 0.9rem 1rem; margin-top: 1rem;
+  }
+  .disclaimer p { font-family: var(--fm); font-size: 0.62rem; color: var(--brown); line-height: 1.65; }
+  .disclaimer strong { color: var(--orange); }
+
+  /* ─── ERROR ─── */
+  .err-card {
+    background: rgba(201,79,30,.06); border: 1.5px solid rgba(201,79,30,.3);
+    border-left: 3px solid var(--rust); padding: 0.9rem 1rem; margin-top: 0.8rem;
+    font-family: var(--fm); font-size: 0.75rem; color: var(--rust);
+  }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    background: var(--ink); color: rgba(250,247,242,.35);
+    padding: 1.2rem 1.5rem calc(1.2rem + env(safe-area-inset-bottom,0px));
+    border-top: 2px solid var(--ink);
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
+    font-family: var(--fm); font-size: 0.58rem; letter-spacing: 0.06em;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (min-width: 600px) {
+    .hdr { padding: calc(var(--safe-top) + 1.3rem) 2.5rem 1.3rem; }
+    .hero-wrap { padding: 4rem 2.5rem 0; }
+    .form-wrap { padding: 0 2.5rem 3.5rem; }
+    .result-wrap { padding: 0 2.5rem 4.5rem; }
+    .how-section { padding: 0 2.5rem 3.5rem; }
+    .aff-section { padding: 0 2.5rem 3.5rem; }
+    .fcard { padding: 2.2rem; }
+    .day-head { padding: 1rem 1.2rem; min-height: auto; }
+    .day-name { white-space: normal; }
+  }
+`;
+
+const STOP_PRESETS = [1, 2, 3, 4, 5];
+
+const buildAffiliates = (destination, from) => {
+  const dest = encodeURIComponent(destination || "");
+  const origin = encodeURIComponent(from || "");
+  return [
+    { cat: "✈️ Flights", items: [
+      { ico:"✈️", name:"Skyscanner", desc:"Cheapest flights, pre-filled with your route", cta:"Search flights →", color:"#00a1e4", url:`https://www.skyscanner.net/transport/flights/${origin}/${dest}/` },
+      { ico:"🛫", name:"Kayak", desc:"Compare 100s of travel sites at once", cta:"Compare prices →", color:"#ff690f", url:`https://www.kayak.com/flights/${origin}-${dest}` },
+    ]},
+    { cat: "🏨 Sleep", items: [
+      { ico:"🛏️", name:"Hostelworld", desc:"Best-rated hostels for backpackers worldwide", cta:"Find hostels →", color:"#ff6600", url:`https://www.hostelworld.com/search?search_keywords=${dest}` },
+      { ico:"🏠", name:"Booking.com", desc:"Guesthouses, budget hotels & more", cta:"Browse stays →", color:"#003580", url:`https://www.booking.com/search.html?ss=${dest}` },
+    ]},
+    { cat: "🎒 Do", items: [
+      { ico:"🗺️", name:"GetYourGuide", desc:"Local tours, day trips & experiences", cta:"Explore →", color:"#ff5533", url:`https://www.getyourguide.com/s/?q=${dest}` },
+      { ico:"🎡", name:"Viator", desc:"Skip-the-line tickets & activities", cta:"Book →", color:"#1a6bff", url:`https://www.viator.com/searchResults/all?text=${dest}` },
+    ]},
+    { cat: "🛡️ Travel Essentials", items: [
+      { ico:"🌍", name:"SafetyWing", desc:"Travel insurance built for nomads & backpackers", cta:"Get covered →", color:"#1d7a6e", url:"https://safetywing.com/nomad-insurance" },
+      { ico:"🏥", name:"World Nomads", desc:"Adventure travel insurance worldwide", cta:"Get a quote →", color:"#00b4d8", url:"https://www.worldnomads.com" },
+      { ico:"📱", name:"Airalo eSIM", desc:"Local data in 200+ countries — no roaming", cta:"Get eSIM →", color:"#7c3aed", url:"https://www.airalo.com" },
+      { ico:"🔒", name:"NordVPN", desc:"Stay secure on hostel & café WiFi", cta:"Get NordVPN →", color:"#4687ff", url:"https://nordvpn.com" },
+    ]},
+  ];
+};
+
+function AffiliateSection({ destination, from }) {
+  const groups = buildAffiliates(destination, from);
+  return (
+    <div>
+      <div className="aff-title">🧳 Book everything for your trip</div>
+      {groups.map((g, gi) => (
+        <div key={gi}>
+          <div className="aff-cat-label">{g.cat}</div>
+          <div className="aff-grid">
+            {g.items.map((item, ii) => (
+              <a key={ii} className="aff-card" href={item.url} target="_blank" rel="noopener noreferrer" style={{ "--ac": item.color }}>
+                <span className="aff-ico">{item.ico}</span>
+                <span className="aff-name">{item.name}</span>
+                <span className="aff-desc">{item.desc}</span>
+                <span className="aff-cta" style={{ color: item.color }}>{item.cta}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+      <div className="aff-note">HoppAway may earn a commission on bookings — at no extra cost to you.</div>
+    </div>
+  );
+}
+
+function parseItinerary(text) {
+  let clean = text.replace(/```json\s*/gi, "").replace(/```\s*/gi, "").trim();
+  const s = clean.indexOf("{"), e = clean.lastIndexOf("}");
+  if (s !== -1 && e !== -1) clean = clean.slice(s, e + 1);
+  try { return JSON.parse(clean); } catch (_) {}
+  try { return JSON.parse(clean.replace(/,\s*([}\]])/g, "$1")); } catch (_) {}
+  return null;
+}
+
+export default function HoppAway() {
+  const [form, setForm] = useState({ destination: "", days: "7", budget: "500", currency: "EUR", from: "", stops: "2" });
+  const [useCustom, setUseCustom] = useState(false);
+  const [customStops, setCustomStops] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [regenLoading, setRegenLoading] = useState(false);
+  const [result, setResult] = useState(null);
+  const [itinerary, setItinerary] = useState([]);
+  const [locked, setLocked] = useState(new Set());
+  const [open, setOpen] = useState({});
+  const [error, setError] = useState(null);
+  const [view, setView] = useState("form"); // "form" | "result"
+
+  const dragIdx = useRef(null);
+  const [dragOver, setDragOver] = useState(null);
+  const touchIdx = useRef(null);
+
+  const toggleOpen = (i) => setOpen(p => ({ ...p, [i]: !p[i] }));
+  const toggleLock = (i) => setLocked(p => { const n = new Set(p); n.has(i) ? n.delete(i) : n.add(i); return n; });
+  const activeStops = useCustom ? (parseInt(customStops) || 2) : parseInt(form.stops);
+
+  const buildPrompt = (lockedDays = []) => {
+    const lockedCtx = lockedDays.length > 0
+      ? `\n\nFIXED DAYS (keep these exactly):\n${lockedDays.map(d => `- Day ${d.day}: ${d.title} | sleep: ${d.accommodation} | food: ${d.food} | transport: ${d.transport} | do: ${d.activities}`).join("\n")}`
+      : "";
+    return `You are HoppAway, a budget backpacker trip planner. Generate a ${form.days}-day itinerary for a backpacker going to ${form.destination}${form.from ? ` from ${form.from}` : ""}, total budget ${form.budget} ${form.currency}.
+
+DESTINATION TYPE — critical:
+- If "${form.destination}" is a SINGLE CITY (e.g. "Tokyo", "Rome", "Bangkok", "Chiang Mai"): ignore the stops count. Organize by NEIGHBORHOODS or ZONES within that city. Each day explores a different area/quarter. The "title" field = neighborhood name (e.g. "Asakusa & Ueno"), not a different city.
+- If it's a COUNTRY or REGION (e.g. "Vietnam", "Southeast Asia", "Portugal", "Balkans"): distribute ${form.days} days across ${activeStops} distinct cities/towns, allocating days proportionally.
+- These are FULL DAYS AT DESTINATION — flights and arrival/departure days are NOT included.${lockedCtx}
+
+TRANSPORT — be specific, not generic:
+- Inter-city legs: name exact transport (train/bus/boat/sleeper), operator/line if known, approx duration, estimated cost in ${form.currency}. E.g. "Hanoi → Hue: Reunification Express SE3, overnight sleeper ~10h, ~$18. Book on 12go.asia."
+- Within city/zone: name best local options with realistic per-trip costs. E.g. "BTS Skytrain day pass ~$3; Grab motorbike ~$1-2/ride."
+
+ACCOMMODATION — name a real hostel (dorm bed), not just "budget hostel". Include approx nightly price.
+FOOD — name actual street food dishes and spots, not generic descriptions. Include price estimates.
+ACTIVITIES — name real attractions, free vs. paid. Give entry prices where relevant.
+
+Respond ONLY with valid JSON (no markdown, no explanation):
+{"destination":"string","days":number,"totalBudget":number,"currency":"string","estimatedTotal":number,"dailyAverage":number,"itinerary":[{"day":number,"title":"string","location":"string","estimatedCost":number,"accommodation":"string","accommodationPrice":"string","food":"string","foodPrice":"string","transport":"string","activities":"string"}],"backpackerTips":["tip1","tip2","tip3","tip4","tip5"]}
+
+The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tokyo"). No tourist traps. Real backpacker intel.`;
+  };
+
+  const callAPI = async (prompt) => {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 4500, messages: [{ role: "user", content: prompt }] })
+    });
+    const data = await res.json();
+    return parseItinerary(data.content?.map(b => b.text || "").join("") || "");
+  };
+
+  const handleGenerate = async () => {
+    if (!form.destination || !form.days || !form.budget) return;
+    setLoading(true); setResult(null); setItinerary([]); setLocked(new Set()); setError(null);
+    try {
+      const parsed = await callAPI(buildPrompt());
+      if (parsed) {
+        setResult(parsed); setItinerary(parsed.itinerary || []);
+        setOpen({ 0: true }); setView("result");
+      } else setError("Couldn't parse the itinerary. Please try again.");
+    } catch (e) { setError("Something went wrong. Check your connection."); }
+    finally { setLoading(false); }
+  };
+
+  const handleRegen = async () => {
+    setRegenLoading(true); setError(null);
+    try {
+      const lockedDays = itinerary.filter((_, i) => locked.has(i));
+      const parsed = await callAPI(buildPrompt(lockedDays));
+      if (parsed) {
+        const merged = (parsed.itinerary || []).map((d, i) => locked.has(i) ? { ...itinerary[i] } : d);
+        setItinerary(merged); setResult(r => ({ ...r, ...parsed, itinerary: merged }));
+      } else setError("Couldn't regenerate. Please try again.");
+    } catch (e) { setError("Something went wrong."); }
+    finally { setRegenLoading(false); }
+  };
+
+  const reorder = (from, to) => {
+    const list = [...itinerary];
+    const [moved] = list.splice(from, 1);
+    list.splice(to, 0, moved);
+    const nl = new Set();
+    locked.forEach(li => {
+      if (li === from) nl.add(to);
+      else if (from < to && li > from && li <= to) nl.add(li - 1);
+      else if (from > to && li >= to && li < from) nl.add(li + 1);
+      else nl.add(li);
+    });
+    setLocked(nl);
+    setItinerary(list.map((d, i) => ({ ...d, day: i + 1 })));
+  };
+
+  const onDragStart = (i) => { dragIdx.current = i; };
+  const onDragOver = (e, i) => { e.preventDefault(); setDragOver(i); };
+  const onDrop = (i) => {
+    if (dragIdx.current !== null && dragIdx.current !== i) reorder(dragIdx.current, i);
+    dragIdx.current = null; setDragOver(null);
+  };
+  const onTouchStart = (e, i) => { touchIdx.current = i; };
+  const onTouchMove = useCallback((e) => {
+    if (touchIdx.current === null) return;
+    e.preventDefault();
+    const y = e.touches[0].clientY;
+    document.querySelectorAll(".day-card").forEach((card, idx) => {
+      const r = card.getBoundingClientRect();
+      if (y >= r.top && y <= r.bottom && idx !== touchIdx.current) setDragOver(idx);
+    });
+  }, []);
+  const onTouchEnd = () => {
+    if (touchIdx.current !== null && dragOver !== null && touchIdx.current !== dragOver) reorder(touchIdx.current, dragOver);
+    touchIdx.current = null; setDragOver(null);
+  };
+
+  const budgetLeft = result ? result.totalBudget - result.estimatedTotal : 0;
+
+  const handleBack = () => {
+    setView("form"); setResult(null); setItinerary([]); setLocked(new Set()); setError(null);
+  };
+
+  return (
+    <>
+      <style>{css}</style>
+
+      {/* HEADER */}
+      <header className="hdr">
+        <div className="logo">Hopp<em>Away</em></div>
+        <div className="hdr-right">
+          {view === "result" && (
+            <button className="hdr-back" onClick={handleBack}>← New trip</button>
+          )}
+        </div>
+      </header>
+
+      {/* MARQUEE — always visible */}
+      <div className="marquee-wrap">
+        <div className="marquee-track">
+          {["Hanoi → Hue night train $18","Hostel dorm €12/night Lisbon","Tuk-tuk Phnom Penh $1/ride","Overnight bus Buenos Aires → Mendoza $22","Dosa breakfast $0.80 Chennai","Ferry Split → Hvar €10","Hostel Kathmandu $5/night","Metro day pass Prague €4","Night bus Nairobi → Mombasa $8","Couchette Paris → Barcelona €35","Street tacos $1.50 Mexico City","Shared taxi Marrakech → Fès $6","Hostel dorm $9/night Cape Town","Minibus Tbilisi → Yerevan $12","Pad thai $1.80 Bangkok","Night ferry Athens → Santorini €40",
+            "Hanoi → Hue night train $18","Hostel dorm €12/night Lisbon","Tuk-tuk Phnom Penh $1/ride","Overnight bus Buenos Aires → Mendoza $22","Dosa breakfast $0.80 Chennai","Ferry Split → Hvar €10","Hostel Kathmandu $5/night","Metro day pass Prague €4","Night bus Nairobi → Mombasa $8","Couchette Paris → Barcelona €35","Street tacos $1.50 Mexico City","Shared taxi Marrakech → Fès $6","Hostel dorm $9/night Cape Town","Minibus Tbilisi → Yerevan $12","Pad thai $1.80 Bangkok","Night ferry Athens → Santorini €40"
+          ].map((t, i) => (
+            <span key={i}>{t}{i % 16 !== 15 ? <span className="dot"> ✦ </span> : null}</span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── FORM VIEW ── */}
+      {view === "form" && !loading && (
+        <>
+          <div className="hero-wrap">
+            <div className="hero-eyebrow">AI-powered budget travel planner</div>
+            <h1 className="hero-h1">
+              <span className="hop">Hop.</span><br />
+              Plan.<br />
+              <em>Go.</em>
+            </h1>
+            <p className="hero-desc">
+              Enter your destination, days and budget — get a full day-by-day itinerary with real hostels, exact trains and local street food in seconds. Built for backpackers, not tourists.
+            </p>
+            <div className="hero-pills">
+              <div className="pill accent">⚡ 10 sec itinerary</div>
+              <div className="pill">🎒 Real hostels & trains</div>
+              <div className="pill">💸 Budget = hard limit</div>
+              <div className="pill">🔒 No tourist traps</div>
+              <div className="pill">🔄 Lock & regenerate</div>
+            </div>
+          </div>
+
+          <div className="form-wrap">
+            <div className="fcard">
+              <span className="fcard-label">Your trip</span>
+              <div className="fgrid">
+                <div className="fg full">
+                  <label>Where are you going?</label>
+                  <input type="text" placeholder="Bangkok, Vietnam, Portugal, Southeast Asia..." value={form.destination}
+                    onChange={e => setForm(p => ({ ...p, destination: e.target.value }))} autoCapitalize="words" autoCorrect="off" />
+                </div>
+                <div className="fg">
+                  <label>Departing from (optional)</label>
+                  <input type="text" placeholder="Milan, London, NYC..." value={form.from}
+                    onChange={e => setForm(p => ({ ...p, from: e.target.value }))} autoCapitalize="words" autoCorrect="off" />
+                </div>
+                <div className="fg">
+                  <label>Days at destination ✱</label>
+                  <input type="number" inputMode="numeric" min="1" max="30" placeholder="7"
+                    value={form.days} onChange={e => setForm(p => ({ ...p, days: e.target.value }))} />
+                  <span className="fg-hint">Exclude flights & travel days.</span>
+                </div>
+                <div className="fg">
+                  <label>Total budget</label>
+                  <input type="number" inputMode="decimal" min="50" placeholder="500"
+                    value={form.budget} onChange={e => setForm(p => ({ ...p, budget: e.target.value }))} />
+                </div>
+                <div className="fg">
+                  <label>Currency</label>
+                  <select value={form.currency} onChange={e => setForm(p => ({ ...p, currency: e.target.value }))}>
+                    <option value="EUR">EUR €</option>
+                    <option value="USD">USD $</option>
+                    <option value="GBP">GBP £</option>
+                  </select>
+                </div>
+              </div>
+
+              <hr className="fdivider" />
+
+              <div className="stops-label">Stops / cities (for multi-city trips)</div>
+              <div className="stops-row">
+                {STOP_PRESETS.map(n => (
+                  <div key={n} className={`schip ${!useCustom && form.stops === String(n) ? "on" : ""}`}
+                    onClick={() => { setUseCustom(false); setForm(p => ({ ...p, stops: String(n) })); }}>
+                    {n}
+                  </div>
+                ))}
+                <div className={`schip ${useCustom ? "on" : ""}`} onClick={() => setUseCustom(true)}>Custom</div>
+              </div>
+              {useCustom && (
+                <div className="custom-row">
+                  <input type="number" inputMode="numeric" min="1" max="20" placeholder="6" value={customStops} onChange={e => setCustomStops(e.target.value)} />
+                  <span style={{ fontFamily: "var(--fm)", fontSize: "0.7rem", color: "var(--muted)" }}>stops</span>
+                </div>
+              )}
+              <div className="stops-hint">Single city? AI organizes by neighborhood instead of stops.</div>
+
+              <div style={{
+                background: "#fffbf0", border: "1.5px solid rgba(245,200,66,.4)",
+                borderLeft: "3px solid var(--yellow)", padding: "0.75rem 0.9rem", marginTop: "0.8rem"
+              }}>
+                <p style={{ fontFamily: "var(--fm)", fontSize: "0.62rem", color: "var(--brown)", lineHeight: 1.65 }}>
+                  <strong style={{ color: "var(--orange)" }}>⚠ AI-generated content.</strong> This itinerary is created by an AI and is meant as inspiration. Prices, availability and transport schedules may differ from reality. Always verify before booking.
+                </p>
+              </div>
+
+              <button className="btn-gen" onClick={handleGenerate} disabled={!form.destination || !form.days || !form.budget}>
+                Generate my itinerary →
+              </button>
+              {error && <div className="err-card">⚠ {error}</div>}
+            </div>
+          </div>
+
+          {/* HOW IT WORKS */}
+          <div className="how-section">
+            <div className="sec-eyebrow">How it works</div>
+            <h2 className="sec-title">Three inputs.<br />One perfect trip.</h2>
+            <p className="sec-sub">No 47-step wizard, no account needed. Tell us where, how long and how much — we do the rest.</p>
+            <div className="steps-grid">
+              <div className="step">
+                <div className="step-num">01</div>
+                <div className="step-ico">📍</div>
+                <h3>Tell us your trip</h3>
+                <p>Destination, days at destination (flights excluded), total budget and how many cities to hit.</p>
+              </div>
+              <div className="step">
+                <div className="step-num">02</div>
+                <div className="step-ico">⚡</div>
+                <h3>AI builds your plan</h3>
+                <p>Real hostel names, street food spots, exact transport operators and per-day cost estimates.</p>
+              </div>
+              <div className="step">
+                <div className="step-num">03</div>
+                <div className="step-ico">✏️</div>
+                <h3>Tweak until perfect</h3>
+                <p>Lock the days you love, regenerate the rest. Drag to reorder. Your trip, your rules.</p>
+              </div>
+              <div className="step">
+                <div className="step-num">04</div>
+                <div className="step-ico">🚀</div>
+                <h3>Book everything</h3>
+                <p>Flights, hostels, tours, eSIM, insurance — direct links from your itinerary.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* BOOK EVERYTHING PREVIEW */}
+          <div className="how-section" style={{ paddingTop: 0 }}>
+            <div className="sec-eyebrow">Book everything</div>
+            <h2 className="sec-title">From itinerary<br />to packed bag.</h2>
+            <p className="sec-sub">Every itinerary comes with direct links to book flights, hostels, tours, insurance and eSIM — all in one place.</p>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0.5rem" }}>
+              {[
+                { ico:"✈️", name:"Skyscanner", desc:"Cheapest flights", color:"#00a1e4" },
+                { ico:"🛏️", name:"Hostelworld", desc:"Best backpacker hostels", color:"#ff6600" },
+                { ico:"🏠", name:"Booking.com", desc:"Hotels & guesthouses", color:"#003580" },
+                { ico:"🗺️", name:"GetYourGuide", desc:"Tours & experiences", color:"#ff5533" },
+                { ico:"🌍", name:"SafetyWing", desc:"Travel insurance", color:"#1d7a6e" },
+                { ico:"📱", name:"Airalo eSIM", desc:"Data in 200+ countries", color:"#7c3aed" },
+              ].map((s, i) => (
+                <div key={i} style={{ background: "var(--white)", border: "1.5px solid var(--border)", borderLeft: `3px solid ${s.color}`, padding: "0.75rem 0.85rem", display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+                  <span style={{ fontSize: "1rem" }}>{s.ico}</span>
+                  <span style={{ fontFamily: "var(--ff)", fontWeight: 700, fontSize: "0.82rem", color: "var(--ink)" }}>{s.name}</span>
+                  <span style={{ fontFamily: "var(--fm)", fontSize: "0.58rem", color: "var(--muted)" }}>{s.desc}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* ── LOADING ── */}
+      {loading && (
+        <div className="loading-wrap">
+          <div className="loading-card">
+            <div className="spinner" />
+            <div className="loading-title">Planning your trip to {form.destination}…</div>
+            <div className="loading-sub">Mapping {form.days} days · real hostels · local transport · budget {form.budget} {form.currency}</div>
+          </div>
+        </div>
+      )}
+
+      {/* ── RESULT VIEW ── */}
+      {view === "result" && result && !loading && (
+        <div className="result-wrap">
+          <div className="trip-header">
+            <div className="trip-eyebrow">Your itinerary</div>
+            <div className="trip-title">
+              Trip to <em>{result.destination}</em>
+            </div>
+            <div className="trip-chips">
+              <span className="trip-chip">{result.days} days</span>
+              <span className="trip-chip">{result.totalBudget} {result.currency} budget</span>
+              <span className="trip-chip">~{result.dailyAverage} {result.currency}/day</span>
+              {activeStops > 1 && <span className="trip-chip">{activeStops} stops</span>}
+            </div>
+          </div>
+
+          {/* budget bar */}
+          <div className="budget-bar">
+            <div className="bitem">
+              <div className="blabel">Your budget</div>
+              <div className="bvalue">{result.totalBudget} {result.currency}</div>
+            </div>
+            <div className="bdivider" />
+            <div className="bitem">
+              <div className="blabel">AI estimate</div>
+              <div className="bvalue y">{result.estimatedTotal} {result.currency}</div>
+            </div>
+            <div className="bdivider" />
+            <div className="bitem">
+              <div className="blabel">Left over</div>
+              <div className="bvalue t">{budgetLeft} {result.currency}</div>
+            </div>
+          </div>
+
+          {/* regen bar */}
+          <div className="regen-bar">
+            <div className="regen-info">
+              🔒 Lock days you love — only <strong>unlocked</strong> days regenerate.
+              {locked.size > 0 && <> · <strong>{locked.size} locked</strong>, {itinerary.length - locked.size} will change.</>}
+            </div>
+            <button className="btn-regen" onClick={handleRegen} disabled={regenLoading}>
+              {regenLoading ? "…" : "↻ Regenerate"}
+            </button>
+          </div>
+
+          {error && <div className="err-card">⚠ {error}</div>}
+
+          {/* day cards */}
+          {itinerary.map((day, i) => (
+            <div key={`${i}-${day.title}`}
+              className={`day-card ${open[i] ? "open" : ""} ${locked.has(i) ? "locked" : ""} ${dragOver === i ? "drag-over" : ""}`}
+              style={{ animationDelay: `${i * 0.04}s` }}
+              draggable
+              onDragStart={() => onDragStart(i)}
+              onDragOver={(e) => onDragOver(e, i)}
+              onDrop={() => onDrop(i)}
+              onDragEnd={() => { dragIdx.current = null; setDragOver(null); }}
+            >
+              <div className="day-head" onClick={() => toggleOpen(i)}>
+                <span className="drag-h"
+                  onClick={e => e.stopPropagation()}
+                  onTouchStart={(e) => { e.stopPropagation(); onTouchStart(e, i); }}
+                  onTouchMove={onTouchMove}
+                  onTouchEnd={onTouchEnd}>⠿</span>
+                <span className="day-num">DAY {day.day}</span>
+                {day.location && <span className="day-place">{day.location}</span>}
+                <span className="day-name">{day.title}</span>
+                <button className={`btn-lock ${locked.has(i) ? "on" : ""}`}
+                  onClick={e => { e.stopPropagation(); toggleLock(i); }}>
+                  {locked.has(i) ? "🔒" : "🔓"}
+                </button>
+                <span className="day-cost">{day.estimatedCost} {result.currency}</span>
+                <span className="chev">▼</span>
+              </div>
+
+              {open[i] && (
+                <div className="day-body">
+                  {/* sleep */}
+                  <div className="dsec">
+                    <div className="dsec-title">🏨 Sleep</div>
+                    <div className="dsec-body">{day.accommodation}</div>
+                    {day.accommodationPrice && <div className="dsec-price">{day.accommodationPrice}</div>}
+                  </div>
+                  {/* eat */}
+                  <div className="dsec">
+                    <div className="dsec-title">🍜 Eat</div>
+                    <div className="dsec-body">{day.food}</div>
+                    {day.foodPrice && <div className="dsec-price">{day.foodPrice}</div>}
+                  </div>
+                  {/* transport */}
+                  <div className="transport-block">
+                    <div className="dsec-title">🚌 Getting around</div>
+                    <div className="dsec-body">{day.transport}</div>
+                  </div>
+                  {/* do */}
+                  <div className="dsec">
+                    <div className="dsec-title">🎒 Do</div>
+                    <div className="dsec-body">{day.activities}</div>
+                  </div>
+                  {/* budget on track indicator */}
+                  {day.estimatedCost <= (result.dailyAverage * 1.1) && (
+                    <div className="on-track">✓ Budget on track</div>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+
+          {/* backpacker tips */}
+          {result.backpackerTips?.length > 0 && (
+            <div className="tips-card">
+              <div className="tips-title">⚡ Backpacker hacks for {result.destination}</div>
+              {result.backpackerTips.map((t, i) => (
+                <div key={i} className="tip">
+                  <span className="tip-arr">→</span>
+                  <span>{t}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* affiliates */}
+          <div className="aff-section" style={{ padding: 0, marginTop: "1.5rem" }}>
+            <AffiliateSection destination={result.destination} from={form.from} />
+          </div>
+
+          {/* disclaimer */}
+          <div className="disclaimer">
+            <p><strong>⚠ Estimates only.</strong> Prices, availability and conditions change frequently. Always verify before booking. HoppAway is not responsible for discrepancies between estimated and actual costs.</p>
+          </div>
+        </div>
+      )}
+
+      {/* FOOTER */}
+      <footer className="footer">
+        <span>hoppaway · ai budget travel planner · v0.3</span>
+        <span style={{ opacity: 0.3 }}>AI Beta · built with ♥ for backpackers</span>
+      </footer>
+    </>
+  );
+}
