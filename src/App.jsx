@@ -93,7 +93,7 @@ const css = `
     font-family: var(--fm); font-size: 0.6rem; font-weight: 700;
     padding: 0.28rem 0.7rem; border: 1.5px solid var(--border); color: var(--brown); background: var(--white);
   }
-  .pill.accent { background: var(--yellow); border-color: var(--yellow); color: var(--ink); }
+  .pill.accent { background: var(--yellow); border-color: var(--ink); color: var(--ink); box-shadow: 2px 2px 0 var(--ink); }
 
   /* ─── FORM CARD ─── */
   .form-wrap { max-width: 700px; margin: 0 auto; padding: 0 1.5rem 3rem; }
@@ -213,9 +213,13 @@ const css = `
     cursor: pointer; box-shadow: 2px 2px 0 var(--ink); font-weight: 700;
     white-space: nowrap; min-height: 36px; transition: all .12s;
     -webkit-tap-highlight-color: transparent;
+    display: flex; align-items: center; gap: 0.5rem;
   }
   .btn-regen:active { transform: translate(2px,2px); box-shadow: none; }
-  .btn-regen:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-regen:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: 2px 2px 0 var(--ink); }
+  .btn-regen-spinner { width: 12px; height: 12px; border: 2px solid rgba(26,18,8,.25); border-top-color: var(--ink); border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0; }
+  .day-card.regenerating { opacity: 0.45; pointer-events: none; transition: opacity .2s; }
+  .day-card.regenerating .day-head { background: var(--sand); }
 
   /* ─── DAY CARDS ─── */
   .day-card {
@@ -362,7 +366,7 @@ const css = `
 
   /* ─── FOOTER ─── */
   .footer {
-    background: var(--ink); color: rgba(250,247,242,.35);
+    background: var(--ink); color: rgba(250,247,242,.55);
     padding: 1.2rem 1.5rem calc(1.2rem + env(safe-area-inset-bottom,0px));
     border-top: 2px solid var(--ink);
     display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
@@ -549,11 +553,13 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
     dragIdx.current = null; setDragOver(null);
   };
   const onTouchStart = (e, i) => { touchIdx.current = i; };
+  const cardRefs = useRef([]);
   const onTouchMove = useCallback((e) => {
     if (touchIdx.current === null) return;
     e.preventDefault();
     const y = e.touches[0].clientY;
-    document.querySelectorAll(".day-card").forEach((card, idx) => {
+    cardRefs.current.forEach((card, idx) => {
+      if (!card) return;
       const r = card.getBoundingClientRect();
       if (y >= r.top && y <= r.bottom && idx !== touchIdx.current) setDragOver(idx);
     });
@@ -605,10 +611,10 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
               <em>Go.</em>
             </h1>
             <p className="hero-desc">
-              Enter your destination, days and budget — get a full day-by-day itinerary with real hostels, exact trains and local street food in seconds. Built for backpackers, not tourists.
+              Enter your destination, days and budget — get a full day-by-day itinerary with real hostels, exact trains and local street food. Built for backpackers, not tourists.
             </p>
             <div className="hero-pills">
-              <div className="pill accent">⚡ 10 sec itinerary</div>
+              <div className="pill">⚡ AI itinerary</div>
               <div className="pill">🎒 Real hostels & trains</div>
               <div className="pill">💸 Budget = hard limit</div>
               <div className="pill">🔒 No tourist traps</div>
@@ -751,7 +757,8 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
           <div className="loading-card">
             <div className="spinner" />
             <div className="loading-title">Planning your trip to {form.destination}…</div>
-            <div className="loading-sub">Mapping {form.days} days · real hostels · local transport · budget {form.budget} {form.currency}</div>
+            <div className="loading-sub">Finding real hostels · mapping transport · checking your budget</div>
+            <div style={{ fontFamily:"var(--fm)", fontSize:"0.6rem", color:"var(--border)", marginTop:"0.8rem" }}>This may take 20–40 seconds — good things take time ✈️</div>
           </div>
         </div>
       )}
@@ -797,7 +804,9 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
               {locked.size > 0 && <> · <strong>{locked.size} locked</strong>, {itinerary.length - locked.size} will change.</>}
             </div>
             <button className="btn-regen" onClick={handleRegen} disabled={regenLoading}>
-              {regenLoading ? "…" : "↻ Regenerate"}
+              {regenLoading ? (
+                <><span className="btn-regen-spinner" />Regenerating…</>
+              ) : "↻ Regenerate"}
             </button>
           </div>
 
@@ -806,7 +815,8 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
           {/* day cards */}
           {itinerary.map((day, i) => (
             <div key={`${i}-${day.title}`}
-              className={`day-card ${open[i] ? "open" : ""} ${locked.has(i) ? "locked" : ""} ${dragOver === i ? "drag-over" : ""}`}
+              ref={el => cardRefs.current[i] = el}
+              className={`day-card ${open[i] ? "open" : ""} ${locked.has(i) ? "locked" : ""} ${dragOver === i ? "drag-over" : ""} ${regenLoading && !locked.has(i) ? "regenerating" : ""}`}
               style={{ animationDelay: `${i * 0.04}s` }}
               draggable
               onDragStart={() => onDragStart(i)}
@@ -818,8 +828,8 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
                 <span className="drag-h"
                   onClick={e => e.stopPropagation()}
                   onTouchStart={(e) => { e.stopPropagation(); onTouchStart(e, i); }}
-                  onTouchMove={onTouchMove}
-                  onTouchEnd={onTouchEnd}>⠿</span>
+                  onTouchMove={(e) => { e.stopPropagation(); onTouchMove(e); }}
+                  onTouchEnd={(e) => { e.stopPropagation(); onTouchEnd(); }}>⠿</span>
                 <span className="day-num">DAY {day.day}</span>
                 {day.location && <span className="day-place">{day.location}</span>}
                 <span className="day-name">{day.title}</span>
@@ -891,8 +901,9 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
 
       {/* FOOTER */}
       <footer className="footer">
-        <span>hoppaway · ai budget travel planner · v0.3</span>
-        <span style={{ opacity: 0.3 }}>AI Beta · built with ♥ for backpackers</span>
+        <span>hoppaway · ai budget travel planner · 2026</span>
+        <span><a href="mailto:hello@hoppaway.app" style={{ color:"rgba(250,247,242,.4)", textDecoration:"none" }}>hello@hoppaway.app</a></span>
+        <span>built with ♥ for backpackers</span>
       </footer>
     </>
   );
