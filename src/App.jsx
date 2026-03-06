@@ -491,13 +491,14 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
   };
 
   const callAPI = async (prompt) => {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
+    const res = await fetch("/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 4500, messages: [{ role: "user", content: prompt }] })
+      body: JSON.stringify({ prompt })
     });
     const data = await res.json();
-    return parseItinerary(data.content?.map(b => b.text || "").join("") || "");
+    if (data.error) throw new Error(data.error);
+    return parseItinerary(data.text || "");
   };
 
   const handleGenerate = async () => {
