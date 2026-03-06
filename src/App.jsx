@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 
 const FONTS = `@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');`;
 
@@ -88,7 +88,7 @@ const css = `
   }
   .hero-h1 em { font-style: italic; color: var(--rust); }
   .hero-desc { font-size: 0.85rem; line-height: 1.8; color: var(--brown); max-width: 480px; margin-bottom: 2rem; }
-  .hero-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 2.5rem; }
+  .hero-pills { display: grid; grid-template-columns: repeat(3, auto); gap: 0.4rem; margin-bottom: 2.5rem; justify-content: start; }
   .pill {
     font-family: var(--fm); font-size: 0.6rem; font-weight: 700;
     padding: 0.28rem 0.7rem; border: 1.5px solid var(--border); color: var(--brown); background: var(--white);
@@ -161,12 +161,20 @@ const css = `
   .btn-gen:disabled::after { display: none; }
 
   /* ─── LOADING ─── */
-  .loading-wrap { max-width: 700px; margin: 0 auto; padding: 0 1.5rem 3rem; }
-  .loading-card { background: var(--white); border: 1.5px solid var(--ink); box-shadow: 5px 6px 0 var(--ink); padding: 3rem 2rem; text-align: center; }
-  .spinner { width: 34px; height: 34px; border: 2px solid var(--border); border-top-color: var(--rust); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 1.4rem; }
+  .loading-wrap { max-width: 700px; margin: 0 auto; padding: 2rem 1.5rem 3rem; display:flex; align-items:center; justify-content:center; min-height: 60vh; }
+  .loading-card { background: var(--white); border: 1.5px solid var(--ink); box-shadow: 5px 6px 0 var(--ink); padding: 2.8rem 2rem; text-align: center; width: 100%; max-width: 420px; }
+  .spinner { width: 36px; height: 36px; border: 2.5px solid var(--border); border-top-color: var(--rust); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 1.4rem; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-title { font-family: var(--ff); font-size: 1.2rem; font-weight: 700; color: var(--ink); margin-bottom: 0.4rem; }
-  .loading-sub { font-family: var(--fm); font-size: 0.68rem; color: var(--muted); font-style: italic; }
+  .loading-title { font-family: var(--ff); font-size: 1.2rem; font-weight: 700; color: var(--ink); margin-bottom: 0.3rem; }
+  .loading-sub { font-family: var(--fm); font-size: 0.65rem; color: var(--muted); font-style: italic; margin-bottom: 1.4rem; }
+  .loading-steps { display: flex; gap: 0; border: 1.5px solid var(--border); overflow: hidden; margin-bottom: 0; }
+  .lstep { flex: 1; padding: 0.55rem 0.2rem; font-family: var(--fm); font-size: 0.5rem; color: var(--muted); text-align: center; border-right: 1px solid var(--border); transition: all .4s; }
+  .lstep:last-child { border-right: none; }
+  .lstep-icon { display: block; font-size: 0.9rem; margin-bottom: 0.2rem; }
+  .lstep.done { background: var(--teal); color: white; font-weight: 700; border-color: var(--teal); }
+  .lstep.active { background: var(--yellow); color: var(--ink); font-weight: 700; animation: pulse 1.2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.65} }
+  .loading-note { font-family: var(--fm); font-size: 0.56rem; color: var(--border); margin-top: 1rem; }
 
   /* ─── RESULT ─── */
   .result-wrap { max-width: 800px; margin: 0 auto; padding: 0 1.5rem 4rem; }
@@ -366,12 +374,28 @@ const css = `
 
   /* ─── FOOTER ─── */
   .footer {
-    background: var(--ink); color: rgba(250,247,242,.55);
-    padding: 1.2rem 1.5rem calc(1.2rem + env(safe-area-inset-bottom,0px));
-    border-top: 2px solid var(--ink);
-    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
-    font-family: var(--fm); font-size: 0.58rem; letter-spacing: 0.06em;
+    background: var(--ink);
+    padding: 1.1rem 1.5rem calc(1rem + env(safe-area-inset-bottom,0px));
+    border-top: 2px solid var(--rust);
+    font-family: var(--fm); font-size: 0.58rem; letter-spacing: 0.05em;
   }
+  .footer-row1 {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 0.6rem; padding-bottom: 0.6rem;
+    border-bottom: 1px solid rgba(250,247,242,.07);
+  }
+  .footer-logo { font-family: var(--ff); font-size: 0.95rem; font-weight: 700; color: var(--sand); }
+  .footer-logo em { color: var(--rust); font-style: italic; }
+  .footer-email { color: rgba(250,247,242,.55); text-decoration: none; transition: color .15s; }
+  .footer-email:hover { color: var(--yellow); }
+  .footer-row2 {
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.4rem;
+  }
+  .footer-tagline { color: rgba(250,247,242,.35); font-style: italic; font-size: 0.55rem; }
+  .footer-links { display: flex; gap: 1rem; align-items: center; }
+  .footer-links a { color: rgba(250,247,242,.4); text-decoration: none; transition: color .15s; }
+  .footer-links a:hover { color: var(--yellow); }
+  .footer-links span { color: rgba(250,247,242,.2); }
 
   /* ─── RESPONSIVE ─── */
   @media (min-width: 600px) {
@@ -461,6 +485,7 @@ export default function HoppAway() {
   const [error, setError] = useState(null);
   const [view, setView] = useState("form"); // "form" | "result"
 
+  const [loadStep, setLoadStep] = useState(0);
   const dragIdx = useRef(null);
   const [dragOver, setDragOver] = useState(null);
   const touchIdx = useRef(null);
@@ -553,6 +578,19 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
     dragIdx.current = null; setDragOver(null);
   };
   const onTouchStart = (e, i) => { touchIdx.current = i; };
+  // step animation during loading
+  useEffect(() => {
+    if (!loading) { setLoadStep(0); return; }
+    setLoadStep(0);
+    const timers = [
+      setTimeout(() => setLoadStep(1), 4000),
+      setTimeout(() => setLoadStep(2), 10000),
+      setTimeout(() => setLoadStep(3), 18000),
+    ];
+    return () => timers.forEach(clearTimeout);
+  }, [loading]);
+
+  const hasOpenCards = Object.values(open).some(Boolean);
   const cardRefs = useRef([]);
   const onTouchMove = useCallback((e) => {
     if (touchIdx.current === null) return;
@@ -581,7 +619,7 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
 
       {/* HEADER */}
       <header className="hdr">
-        <div className="logo">Hopp<em>Away</em></div>
+        <div className="logo" onClick={() => { if(view==="result") handleBack(); }} style={{cursor: view==="result" ? "pointer" : "default"}}>Hopp<em>Away</em></div>
         <div className="hdr-right">
           {view === "result" && (
             <button className="hdr-back" onClick={handleBack}>← New trip</button>
@@ -611,14 +649,15 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
               <em>Go.</em>
             </h1>
             <p className="hero-desc">
-              Enter your destination, days and budget — get a full day-by-day itinerary with real hostels, exact trains and local street food. Built for backpackers, not tourists.
+              Enter destination, days and budget — get a full itinerary with real hostels, exact transport and street food.
             </p>
             <div className="hero-pills">
               <div className="pill">⚡ AI itinerary</div>
-              <div className="pill">🎒 Real hostels & trains</div>
-              <div className="pill">💸 Budget = hard limit</div>
-              <div className="pill">🔒 No tourist traps</div>
-              <div className="pill">🔄 Lock & regenerate</div>
+              <div className="pill">🏨 Real hostels</div>
+              <div className="pill">🚌 Exact trains</div>
+              <div className="pill">💸 Hard budget</div>
+              <div className="pill">🚫 No tourist traps</div>
+              <div className="pill">🔄 Lock & regen</div>
             </div>
           </div>
 
@@ -757,8 +796,21 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
           <div className="loading-card">
             <div className="spinner" />
             <div className="loading-title">Planning your trip to {form.destination}…</div>
-            <div className="loading-sub">Finding real hostels · mapping transport · checking your budget</div>
-            <div style={{ fontFamily:"var(--fm)", fontSize:"0.6rem", color:"var(--border)", marginTop:"0.8rem" }}>This may take 20–40 seconds — good things take time ✈️</div>
+            <div className="loading-sub">{form.days} days · {form.budget} {form.currency} budget</div>
+            <div className="loading-steps">
+              {[
+                { icon:"🏨", label:"Hostels" },
+                { icon:"🚌", label:"Transport" },
+                { icon:"💸", label:"Budget" },
+                { icon:"📋", label:"Itinerary" },
+              ].map((s, i) => (
+                <div key={i} className={`lstep ${i < loadStep ? "done" : i === loadStep ? "active" : ""}`}>
+                  <span className="lstep-icon">{s.icon}</span>
+                  <span>{s.label}</span>
+                </div>
+              ))}
+            </div>
+            <div className="loading-note">This may take 20–40 seconds — good things take time ✈️</div>
           </div>
         </div>
       )}
@@ -797,6 +849,13 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
             </div>
           </div>
 
+          {/* drag hint when cards open */}
+          {hasOpenCards && (
+            <div style={{ fontFamily:"var(--fm)", fontSize:"0.6rem", color:"var(--muted)", textAlign:"center", padding:"0.4rem 0", marginBottom:"0.3rem", background:"rgba(245,240,232,.6)", border:"1px solid var(--border)" }}>
+              ↕ Close cards to reorder days
+            </div>
+          )}
+
           {/* regen bar */}
           <div className="regen-bar">
             <div className="regen-info">
@@ -818,8 +877,8 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
               ref={el => cardRefs.current[i] = el}
               className={`day-card ${open[i] ? "open" : ""} ${locked.has(i) ? "locked" : ""} ${dragOver === i ? "drag-over" : ""} ${regenLoading && !locked.has(i) ? "regenerating" : ""}`}
               style={{ animationDelay: `${i * 0.04}s` }}
-              draggable
-              onDragStart={() => onDragStart(i)}
+              draggable={!hasOpenCards}
+              onDragStart={() => { if(!hasOpenCards) onDragStart(i); }}
               onDragOver={(e) => onDragOver(e, i)}
               onDrop={() => onDrop(i)}
               onDragEnd={() => { dragIdx.current = null; setDragOver(null); }}
@@ -901,9 +960,18 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
 
       {/* FOOTER */}
       <footer className="footer">
-        <span>hoppaway · ai budget travel planner · 2026</span>
-        <span><a href="mailto:hello@hoppaway.app" style={{ color:"rgba(250,247,242,.4)", textDecoration:"none" }}>hello@hoppaway.app</a></span>
-        <span>built with ♥ for backpackers</span>
+        <div className="footer-row1">
+          <div className="footer-logo">Hopp<em>Away</em></div>
+          <a href="mailto:hello@hoppaway.app" className="footer-email">hello@hoppaway.app</a>
+        </div>
+        <div className="footer-row2">
+          <span className="footer-tagline">built with ♥ for backpackers</span>
+          <div className="footer-links">
+            <a href="/privacy">Privacy</a>
+            <a href="/terms">Terms</a>
+            <span>© 2026</span>
+          </div>
+        </div>
       </footer>
     </>
   );
