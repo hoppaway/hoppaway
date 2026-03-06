@@ -592,17 +592,34 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
 
   const hasOpenCards = Object.values(open).some(Boolean);
   const cardRefs = useRef([]);
+  const scrollRAF = useRef(null);
+
   const onTouchMove = useCallback((e) => {
     if (touchIdx.current === null) return;
     e.preventDefault();
     const y = e.touches[0].clientY;
+    const ZONE = 90;
+    const SPEED = 7;
+
+    // auto-scroll when near top or bottom of viewport
+    if (scrollRAF.current) cancelAnimationFrame(scrollRAF.current);
+    const doScroll = () => {
+      if (touchIdx.current === null) return;
+      if (y < ZONE) { window.scrollBy(0, -SPEED); scrollRAF.current = requestAnimationFrame(doScroll); }
+      else if (y > window.innerHeight - ZONE) { window.scrollBy(0, SPEED); scrollRAF.current = requestAnimationFrame(doScroll); }
+    };
+    doScroll();
+
+    // detect which card the finger is over
     cardRefs.current.forEach((card, idx) => {
       if (!card) return;
       const r = card.getBoundingClientRect();
       if (y >= r.top && y <= r.bottom && idx !== touchIdx.current) setDragOver(idx);
     });
   }, []);
+
   const onTouchEnd = () => {
+    if (scrollRAF.current) { cancelAnimationFrame(scrollRAF.current); scrollRAF.current = null; }
     if (touchIdx.current !== null && dragOver !== null && touchIdx.current !== dragOver) reorder(touchIdx.current, dragOver);
     touchIdx.current = null; setDragOver(null);
   };
