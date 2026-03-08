@@ -452,7 +452,7 @@ const buildAffiliates = (destination, from) => {
   return [
     { cat: "✈️ Flights", items: [
       { ico:"✈️", name:"Skyscanner", desc:"Cheapest flights, pre-filled with your route", cta:"Search flights →", color:"#00a1e4", url:`https://www.skyscanner.net/transport/flights/${origin}/${dest}/` },
-      { ico:"🛫", name:"Kayak", desc:"Compare 100s of travel sites at once", cta:"Compare prices →", color:"#ff690f", url:`https://www.kayak.com/flights/${origin}-${dest}` },
+      { ico:"🛫", name:"Kiwi.com", desc:"Unique flight combos & cheap connections", cta:"Compare prices →", color:"#00b2a9", url:"https://www.kiwi.com" },
     ]},
     { cat: "🏨 Sleep", items: [
       { ico:"🛏️", name:"Hostelworld", desc:"Best-rated hostels for backpackers worldwide", cta:"Find hostels →", color:"#ff6600", url:`https://www.hostelworld.com/search?search_keywords=${dest}` },
@@ -460,13 +460,15 @@ const buildAffiliates = (destination, from) => {
     ]},
     { cat: "🎒 Do", items: [
       { ico:"🗺️", name:"GetYourGuide", desc:"Local tours, day trips & experiences", cta:"Explore →", color:"#ff5533", url:`https://www.getyourguide.com/s/?q=${dest}` },
-      { ico:"🎡", name:"Viator", desc:"Skip-the-line tickets & activities", cta:"Book →", color:"#1a6bff", url:`https://www.viator.com/searchResults/all?text=${dest}` },
+      { ico:"🎡", name:"Klook", desc:"Activities, tours & experiences worldwide", cta:"Book →", color:"#ff5c00", url:"https://klook.tpk.ro/J5hfsGxE" },
+      { ico:"🎟️", name:"Tiqets", desc:"Instant mobile tickets for top attractions", cta:"Get tickets →", color:"#00c9a7", url:"https://tiqets.tpk.ro/4RXYWxDP" },
     ]},
     { cat: "🛡️ Travel Essentials", items: [
       { ico:"🌍", name:"SafetyWing", desc:"Travel insurance built for nomads & backpackers", cta:"Get covered →", color:"#1d7a6e", url:"https://safetywing.com/nomad-insurance" },
-      { ico:"🏥", name:"World Nomads", desc:"Adventure travel insurance worldwide", cta:"Get a quote →", color:"#00b4d8", url:"https://www.worldnomads.com" },
-      { ico:"📱", name:"Airalo eSIM", desc:"Local data in 200+ countries — no roaming", cta:"Get eSIM →", color:"#7c3aed", url:"https://www.airalo.com" },
-      { ico:"🔒", name:"NordVPN", desc:"Stay secure on hostel & café WiFi", cta:"Get NordVPN →", color:"#4687ff", url:"https://nordvpn.com" },
+      { ico:"✈️", name:"AirHelp", desc:"Claim up to €600 for delayed or cancelled flights", cta:"Check claim →", color:"#e63946", url:"https://airhelp.tpk.ro/sv4awXuZ" },
+      { ico:"📱", name:"Airalo eSIM", desc:"Local data in 200+ countries — no roaming", cta:"Get eSIM →", color:"#ff6b35", url:"https://airalo.tpk.ro/VimxbpvE" },
+      { ico:"📶", name:"Yesim eSIM", desc:"Global eSIM with 18% off — 90 day guarantee", cta:"Get eSIM →", color:"#f5c842", url:"https://yesim.tpk.ro/lWijEzSF" },
+      { ico:"🔒", name:"NordVPN", desc:"Stay secure on hostel & café WiFi", cta:"Get NordVPN →", color:"#4687ff", url:"https://nordvpn.tpk.ro/T31UJ2Gs" },
     ]},
   ];
 };
@@ -1133,18 +1135,18 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
             <p className="sec-sub">Every itinerary comes with direct links to book flights, hostels, tours, insurance and eSIM — all in one place.</p>
             <div className="book-grid">
               {[
-                { ico:"✈️", name:"Skyscanner", desc:"Cheapest flights", color:"#00a1e4" },
-                { ico:"🛏️", name:"Hostelworld", desc:"Best backpacker hostels", color:"#ff6600" },
-                { ico:"🏠", name:"Booking.com", desc:"Hotels & guesthouses", color:"#003580" },
-                { ico:"🗺️", name:"GetYourGuide", desc:"Tours & experiences", color:"#ff5533" },
-                { ico:"🌍", name:"SafetyWing", desc:"Travel insurance", color:"#1d7a6e" },
-                { ico:"📱", name:"Airalo eSIM", desc:"Data in 200+ countries", color:"#7c3aed" },
+                { ico:"✈️", name:"Skyscanner", desc:"Cheapest flights", color:"#00a1e4", url:"https://www.skyscanner.net" },
+                { ico:"🛏️", name:"Hostelworld", desc:"Best backpacker hostels", color:"#ff6600", url:"https://www.hostelworld.com" },
+                { ico:"🏠", name:"Booking.com", desc:"Hotels & guesthouses", color:"#003580", url:"https://www.booking.com" },
+                { ico:"🎟️", name:"Klook", desc:"Tours & experiences", color:"#ff5c00", url:"https://klook.tpk.ro/J5hfsGxE" },
+                { ico:"📱", name:"Airalo eSIM", desc:"Data in 200+ countries", color:"#ff6b35", url:"https://airalo.tpk.ro/VimxbpvE" },
+                { ico:"🔒", name:"NordVPN", desc:"Secure on hostel WiFi", color:"#4687ff", url:"https://nordvpn.tpk.ro/T31UJ2Gs" },
               ].map((s, i) => (
-                <div key={i} style={{ background: "var(--white)", border: "1.5px solid var(--border)", borderLeft: `3px solid ${s.color}`, padding: "0.75rem 0.85rem", display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+                <a key={i} href={s.url} target="_blank" rel="noopener noreferrer" style={{ background: "var(--white)", border: "1.5px solid var(--border)", borderLeft: `3px solid ${s.color}`, padding: "0.75rem 0.85rem", display: "flex", flexDirection: "column", gap: "0.25rem", textDecoration: "none" }}>
                   <span style={{ fontSize: "1rem" }}>{s.ico}</span>
                   <span style={{ fontFamily: "var(--ff)", fontWeight: 700, fontSize: "0.82rem", color: "var(--ink)" }}>{s.name}</span>
                   <span style={{ fontFamily: "var(--fm)", fontSize: "0.58rem", color: "var(--muted)" }}>{s.desc}</span>
-                </div>
+                </a>
               ))}
             </div>
           </div>
