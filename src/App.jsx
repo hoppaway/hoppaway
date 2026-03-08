@@ -1,7 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-
 const FONTS = `@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');`;
-
 const css = `
   ${FONTS}
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -22,13 +20,13 @@ const css = `
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
   }
-
-  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; overflow-x: hidden; }
   body {
     background: var(--cream); color: var(--ink);
     font-family: var(--fm);
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
+    max-width: 100vw;
   }
   body::after {
     content: ''; position: fixed; inset: 0; z-index: 9999; pointer-events: none;
@@ -39,7 +37,6 @@ const css = `
   input[type="number"] { -moz-appearance: textfield; }
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
-
   /* ─── HEADER ─── */
   .hdr {
     padding: calc(var(--safe-top) + 1rem) 1.5rem 1rem;
@@ -58,18 +55,17 @@ const css = `
   .hdr-pill { font-family: var(--fm); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; background: var(--yellow); color: var(--ink); padding: 0.22rem 0.6rem; font-weight: 700; border: 1.5px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); }
   .hdr-back { font-family: var(--fm); font-size: 0.7rem; background: transparent; border: 1.5px solid var(--border); color: var(--muted); padding: 0.4rem 0.8rem; cursor: pointer; transition: all .15s; }
   .hdr-back:hover { border-color: var(--rust); color: var(--rust); }
-
   /* ─── MARQUEE ─── */
   .marquee-wrap {
     background: var(--ink); color: var(--yellow);
     padding: 0.65rem 0; overflow: hidden;
     border-bottom: 2px solid var(--ink);
+    width: 100%;
   }
   .marquee-track { display: flex; white-space: nowrap; animation: marquee 24s linear infinite; }
   .marquee-track span { font-family: var(--ff); font-size: 0.9rem; font-style: italic; padding: 0 1.8rem; flex-shrink: 0; }
   .marquee-track .dot { color: var(--rust); font-style: normal; }
   @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
   /* ─── HERO AREA ─── */
   .hero-wrap { max-width: 700px; margin: 0 auto; padding: 3rem 1.5rem 0; position: relative; z-index: 1; }
   .hero-eyebrow {
@@ -91,13 +87,11 @@ const css = `
   }
   .hero-h1 em { font-style: italic; color: var(--rust); }
   .hero-desc { font-size: 0.85rem; line-height: 1.8; color: var(--brown); max-width: 480px; margin-bottom: 2rem; }
-  .hero-pills { display: grid; grid-template-columns: repeat(3, auto); gap: 0.4rem; margin-bottom: 2.5rem; justify-content: start; }
   .pill {
     font-family: var(--fm); font-size: 0.6rem; font-weight: 700;
     padding: 0.28rem 0.7rem; border: 1.5px solid var(--border); color: var(--brown); background: var(--white);
   }
   .pill.accent { background: var(--yellow); border-color: var(--ink); color: var(--ink); box-shadow: 2px 2px 0 var(--ink); }
-
   /* ─── FORM CARD ─── */
   .form-wrap { max-width: 700px; margin: 0 auto; padding: 0 1.5rem 3rem; }
   .fcard {
@@ -128,7 +122,6 @@ const css = `
   .fg select option { background: var(--sand); }
   .fg-hint { font-family: var(--fm); font-size: 0.56rem; color: var(--muted); line-height: 1.5; margin-top: 0.15rem; opacity: 0.75; }
   .fdivider { border: none; border-top: 1.5px solid var(--border); margin: 1rem 0; }
-
   /* stops */
   .stops-label { font-family: var(--fm); font-size: 0.57rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
   .stops-row { display: flex; gap: 0.4rem; flex-wrap: wrap; }
@@ -145,7 +138,6 @@ const css = `
   .custom-row { display: flex; gap: 0.5rem; margin-top: 0.5rem; align-items: center; }
   .custom-row input { background: var(--sand); border: 1.5px solid var(--border); padding: 0.4rem 0.7rem; color: var(--ink); font-family: var(--fm); font-size: 0.85rem; outline: none; width: 70px; min-height: 38px; }
   .stops-hint { font-family: var(--fm); font-size: 0.56rem; color: var(--muted); margin-top: 0.4rem; font-style: italic; opacity: 0.75; }
-
   /* generate button */
   .btn-gen {
     width: 100%; background: var(--ink); color: var(--sand);
@@ -162,7 +154,6 @@ const css = `
   .btn-gen:active::after { inset: 1px -1px -1px 1px; }
   .btn-gen:disabled { opacity: 0.38; cursor: not-allowed; transform: none; }
   .btn-gen:disabled::after { display: none; }
-
   /* ─── LOADING ─── */
   .loading-wrap { max-width: 700px; margin: 0 auto; padding: 2rem 1.5rem 3rem; display:flex; align-items:center; justify-content:center; min-height: 60vh; }
   .loading-card { background: var(--white); border: 1.5px solid var(--ink); box-shadow: 5px 6px 0 var(--ink); padding: 2.8rem 2rem; text-align: center; width: 100%; max-width: 420px; }
@@ -178,10 +169,8 @@ const css = `
   .lstep.active { background: var(--yellow); color: var(--ink); font-weight: 700; animation: pulse 1.2s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.65} }
   .loading-note { font-family: var(--fm); font-size: 0.56rem; color: var(--border); margin-top: 1rem; }
-
   /* ─── RESULT ─── */
   .result-wrap { max-width: 800px; margin: 0 auto; padding: 0 1.5rem 4rem; }
-
   .trip-header {
     padding: 2rem 0 1.2rem;
     border-bottom: 1.5px solid var(--border);
@@ -193,7 +182,6 @@ const css = `
   .trip-title em { font-style: italic; color: var(--rust); }
   .trip-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
   .trip-chip { font-family: var(--fm); font-size: 0.58rem; background: var(--sand); border: 1.5px solid var(--border); color: var(--muted); padding: 0.22rem 0.6rem; }
-
   /* budget bar */
   .budget-bar {
     background: var(--ink); color: var(--sand);
@@ -208,7 +196,6 @@ const css = `
   .bvalue.y { color: var(--yellow); }
   .bvalue.t { color: #7fd8c8; }
   .bdivider { width: 1px; height: 36px; background: rgba(245,240,232,.12); }
-
   /* regen bar */
   .regen-bar {
     background: #fffbf0; border: 1.5px solid var(--yellow);
@@ -231,7 +218,6 @@ const css = `
   .btn-regen-spinner { width: 12px; height: 12px; border: 2px solid rgba(26,18,8,.25); border-top-color: var(--ink); border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0; }
   .day-card.regenerating { opacity: 0.45; pointer-events: none; transition: opacity .2s; }
   .day-card.regenerating .day-head { background: var(--sand); }
-
   /* ─── DAY CARDS ─── */
   .day-card {
     background: var(--white); border: 1.5px solid var(--border);
@@ -243,7 +229,6 @@ const css = `
   .day-card.locked { border-color: var(--teal); box-shadow: 3px 4px 0 var(--teal); }
   .day-card.drag-over { border-color: var(--rust); border-style: dashed; }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
   .day-head {
     display: flex; align-items: center; gap: 0.5rem;
     padding: 0.9rem 1rem; cursor: pointer;
@@ -253,10 +238,8 @@ const css = `
   }
   .day-head:active { background: var(--sand); }
   .day-card.open .day-head { border-bottom: 1.5px solid var(--border); background: var(--sand); }
-
   .drag-h { color: var(--muted); opacity: 0.35; font-size: 0.85rem; cursor: grab; flex-shrink: 0; touch-action: none; min-width: 22px; text-align: center; -webkit-tap-highlight-color: transparent; }
   .drag-h:active { opacity: 1; cursor: grabbing; }
-
   .day-num {
     font-family: var(--fm); font-size: 0.55rem; letter-spacing: 0.06em;
     color: var(--rust); background: rgba(201,79,30,.08);
@@ -264,16 +247,13 @@ const css = `
     padding: 0.15rem 0.45rem; flex-shrink: 0; white-space: nowrap;
   }
   .day-card.locked .day-num { color: var(--teal); background: rgba(29,122,110,.08); border-color: rgba(29,122,110,.25); }
-
   .day-place {
     font-family: var(--fm); font-size: 0.62rem; color: var(--muted);
     flex-shrink: 0; white-space: nowrap; display: none;
   }
   @media (min-width: 480px) { .day-place { display: block; } }
-
   .day-name { font-family: var(--ff); font-weight: 700; font-size: 0.9rem; letter-spacing: -0.02em; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .day-cost { font-family: var(--fm); font-size: 0.68rem; color: var(--orange); flex-shrink: 0; white-space: nowrap; font-weight: 700; }
-
   .btn-lock {
     background: none; border: 1px solid var(--border);
     padding: 0.18rem 0.4rem; font-size: 0.58rem; cursor: pointer;
@@ -282,10 +262,8 @@ const css = `
     -webkit-tap-highlight-color: transparent;
   }
   .btn-lock.on { background: rgba(29,122,110,.08); border-color: var(--teal); color: var(--teal); }
-
   .chev { color: var(--muted); font-size: 0.5rem; transition: transform .2s; flex-shrink: 0; }
   .day-card.open .chev { transform: rotate(180deg); }
-
   /* day body */
   .day-body { padding: 1.1rem; }
   .dsec { margin-bottom: 1rem; }
@@ -293,7 +271,6 @@ const css = `
   .dsec-title { font-family: var(--fm); font-size: 0.52rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.35rem; }
   .dsec-body { font-size: 0.88rem; line-height: 1.72; color: var(--brown); }
   .dsec-price { font-family: var(--fm); font-size: 0.65rem; font-weight: 700; color: var(--rust); margin-top: 0.25rem; }
-
   .transport-block {
     background: #fffbf0; border: 1.5px solid rgba(245,200,66,.5);
     border-left: 3px solid var(--yellow);
@@ -301,7 +278,6 @@ const css = `
   }
   .transport-block .dsec-title { color: var(--orange); }
   .transport-block .dsec-body { color: var(--ink); }
-
   /* budget on track */
   .on-track {
     display: inline-flex; align-items: center; gap: 0.3rem;
@@ -309,7 +285,6 @@ const css = `
     background: rgba(29,122,110,.06); border: 1px solid rgba(29,122,110,.2);
     padding: 0.2rem 0.5rem; margin-top: 0.4rem;
   }
-
   /* ─── TIPS ─── */
   .tips-card {
     background: var(--sand); border: 1.5px solid var(--border);
@@ -319,7 +294,6 @@ const css = `
   .tips-title { font-family: var(--fm); font-size: 0.58rem; color: var(--rust); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.8rem; }
   .tip { display: flex; gap: 0.6rem; margin-bottom: 0.6rem; font-size: 0.82rem; line-height: 1.65; color: var(--brown); }
   .tip-arr { color: var(--rust); flex-shrink: 0; font-family: var(--fm); font-size: 0.78rem; }
-
   /* ─── HOW IT WORKS STRIP ─── */
   .hiw-strip { padding: 0 1.5rem 0; max-width: 860px; margin: 0 auto 2rem; }
   .hiw-strip-inner { background: var(--sand); border: 1.5px solid var(--border); padding: 1.2rem 1.5rem; }
@@ -331,7 +305,6 @@ const css = `
   .hiw-strip-n { width: 1.4rem; height: 1.4rem; background: var(--rust); color: white; font-family: var(--fm); font-size: 0.55rem; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid var(--sand); }
   .hiw-strip-step strong { font-family: var(--ff); font-size: 0.72rem; color: var(--ink); display: block; line-height: 1.2; }
   .hiw-strip-step span { font-family: var(--fm); font-size: 0.46rem; color: var(--muted); line-height: 1.5; }
-
   /* ─── TRAVELING AS / PACE / STYLE ─── */
   .new-badge { font-family: var(--fm); font-size: 0.42rem; background: var(--yellow); color: var(--ink); padding: 0.15rem 0.35rem; font-weight: 700; border: 1px solid var(--ink); vertical-align: middle; margin-left: 0.3rem; }
   .who-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; margin-bottom: 0.3rem; }
@@ -346,17 +319,20 @@ const css = `
   .style-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; margin-bottom: 0.3rem; }
   .style-chip { font-family: var(--fm); font-size: 0.6rem; padding: 0.5rem 0.65rem; border: 1.5px solid var(--border); background: var(--sand); color: var(--muted); cursor: pointer; display: flex; align-items: center; gap: 0.4rem; user-select: none; transition: all .12s; -webkit-tap-highlight-color: transparent; }
   .style-chip.on { background: var(--rust); border-color: var(--ink); color: #fff; font-weight: 700; box-shadow: 2px 2px 0 var(--ink); }
-
-  .book-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .book-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    width: 100%;
+  }
   @media (min-width: 480px) { .book-grid { grid-template-columns: 1fr 1fr 1fr; } }
-
+  @media (min-width: 860px) { .book-grid { grid-template-columns: repeat(4, 1fr); } }
   /* ─── HOW IT WORKS ─── */
   .how-section { max-width: 700px; margin: 0 auto; padding: 0 1.5rem 3rem; }
   .sec-eyebrow { font-family: var(--fm); font-size: 0.58rem; color: var(--rust); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.7rem; display: flex; align-items: center; gap: 0.5rem; }
   .sec-eyebrow::before { content: ''; width: 16px; height: 1.5px; background: var(--rust); }
   .sec-title { font-family: var(--ff); font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 900; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 0.6rem; }
   .sec-sub { font-size: 0.82rem; color: var(--muted); line-height: 1.8; margin-bottom: 2rem; }
-
   .steps-grid { display: grid; grid-template-columns: 1fr 1fr; border: 1.5px solid var(--ink); overflow: hidden; }
   .step { padding: 1.5rem; border-right: 1.5px solid var(--ink); border-bottom: 1.5px solid var(--ink); background: var(--cream); transition: background .2s; }
   .step:nth-child(2n) { border-right: none; }
@@ -366,7 +342,6 @@ const css = `
   .step-ico { font-size: 1.3rem; margin-bottom: 0.5rem; }
   .step h3 { font-family: var(--ff); font-size: 0.92rem; font-weight: 700; margin-bottom: 0.3rem; color: var(--ink); }
   .step p { font-size: 0.72rem; color: var(--muted); line-height: 1.65; }
-
   /* ─── AFFILIATES ─── */
   .aff-section { max-width: 700px; margin: 0 auto; padding: 0 1.5rem 3rem; }
   .aff-title { font-family: var(--fm); font-size: 0.58rem; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem; }
@@ -389,7 +364,6 @@ const css = `
   .aff-desc { font-family: var(--fm); font-size: 0.6rem; color: var(--muted); line-height: 1.4; }
   .aff-cta { font-family: var(--fm); font-size: 0.6rem; font-weight: 700; margin-top: 0.1rem; }
   .aff-note { font-family: var(--fm); font-size: 0.54rem; color: var(--muted); opacity: 0.5; text-align: center; margin-top: 0.4rem; }
-
   /* ─── DISCLAIMER ─── */
   .disclaimer {
     background: #fffbf0; border: 1.5px solid rgba(245,200,66,.4);
@@ -397,14 +371,12 @@ const css = `
   }
   .disclaimer p { font-family: var(--fm); font-size: 0.62rem; color: var(--brown); line-height: 1.65; }
   .disclaimer strong { color: var(--orange); }
-
   /* ─── ERROR ─── */
   .err-card {
     background: rgba(201,79,30,.06); border: 1.5px solid rgba(201,79,30,.3);
     border-left: 3px solid var(--rust); padding: 0.9rem 1rem; margin-top: 0.8rem;
     font-family: var(--fm); font-size: 0.75rem; color: var(--rust);
   }
-
   /* ─── FOOTER ─── */
   .footer {
     background: var(--ink);
@@ -429,7 +401,13 @@ const css = `
   .footer-links a { color: rgba(250,247,242,.4); text-decoration: none; transition: color .15s; }
   .footer-links a:hover { color: var(--yellow); }
   .footer-links span { color: rgba(250,247,242,.2); }
-
+  /* ─── AFFILIATE BADGE FIX (mobile) ─── */
+  .book-badge {
+    position: absolute; top: 0.45rem; right: 0.45rem;
+    font-family: var(--fm); font-size: 0.42rem;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 0.15rem 0.35rem;
+  }
   /* ─── RESPONSIVE ─── */
   @media (min-width: 600px) {
     .hdr { padding: calc(var(--safe-top) + 1.3rem) 2.5rem 1.3rem; }
@@ -443,9 +421,7 @@ const css = `
     .day-name { white-space: normal; }
   }
 `;
-
 const STOP_PRESETS = [1, 2, 3, 4, 5];
-
 const buildAffiliates = (destination, from) => {
   const dest = encodeURIComponent(destination || "");
   const origin = encodeURIComponent(from || "");
@@ -477,7 +453,6 @@ const buildAffiliates = (destination, from) => {
     ]},
   ];
 };
-
 function AffiliateSection({ destination, from }) {
   const groups = buildAffiliates(destination, from);
   return (
@@ -502,7 +477,6 @@ function AffiliateSection({ destination, from }) {
     </div>
   );
 }
-
 function parseItinerary(text) {
   let clean = text.replace(/```json\s*/gi, "").replace(/```\s*/gi, "").trim();
   const s = clean.indexOf("{"), e = clean.lastIndexOf("}");
@@ -511,7 +485,6 @@ function parseItinerary(text) {
   try { return JSON.parse(clean.replace(/,\s*([}\]])/g, "$1")); } catch (_) {}
   return null;
 }
-
 const legalCss = `
   .legal-wrap { max-width: 680px; margin: 0 auto; padding: 2rem 1.5rem 4rem; font-family: var(--fm); color: var(--ink); }
   .legal-back { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--fm); font-size: 0.65rem; color: var(--muted); text-decoration: none; border: 1.5px solid var(--border); padding: 0.4rem 0.8rem; margin-bottom: 2rem; background: var(--sand); cursor: pointer; }
@@ -527,7 +500,6 @@ const legalCss = `
   .legal-contact p { font-size: 0.75rem; line-height: 1.8; color: var(--brown); }
   .legal-contact a { color: var(--rust); }
 `;
-
 function PrivacyPage({ onBack }) {
   useEffect(() => { window.scrollTo(0,0); }, []);
   return (
@@ -542,10 +514,8 @@ function PrivacyPage({ onBack }) {
         <div className="legal-eyebrow">Legal</div>
         <h1 className="legal-title">Privacy Policy</h1>
         <div className="legal-date">Last updated: March 2026</div>
-
         <h2 className="legal-h2">1. Who we are</h2>
         <p className="legal-p">HoppAway (hoppaway.app) is an AI-powered travel planning tool built and operated by a solo founder. We are not a registered company at this time. For any privacy-related questions, contact us at hello@hoppaway.app.</p>
-
         <h2 className="legal-h2">2. What data we collect</h2>
         <p className="legal-p">We collect only the minimum data necessary to provide the service:</p>
         <ul className="legal-ul">
@@ -554,7 +524,6 @@ function PrivacyPage({ onBack }) {
           <li>Cookies strictly necessary for the functioning of the site.</li>
         </ul>
         <p className="legal-p">We do not collect your name, email address, or any account information unless you voluntarily contact us.</p>
-
         <h2 className="legal-h2">3. How we use your data</h2>
         <ul className="legal-ul">
           <li>To generate your AI trip itinerary in response to your inputs.</li>
@@ -562,7 +531,6 @@ function PrivacyPage({ onBack }) {
           <li>To respond to messages sent to hello@hoppaway.app.</li>
         </ul>
         <p className="legal-p">We do not sell, rent, or share your personal data with third parties for marketing purposes.</p>
-
         <h2 className="legal-h2">4. Third-party services</h2>
         <p className="legal-p">HoppAway uses the following third-party services which may process data on our behalf:</p>
         <ul className="legal-ul">
@@ -570,25 +538,18 @@ function PrivacyPage({ onBack }) {
           <li><strong>Vercel</strong> — hosts the application and may log standard server access data (IP address, browser type, timestamp).</li>
           <li><strong>Affiliate partners</strong> (Skyscanner, Hostelworld, Booking.com, GetYourGuide, etc.) — when you click a booking link, you are redirected to their sites under their own privacy policies.</li>
         </ul>
-
         <h2 className="legal-h2">5. Cookies</h2>
         <p className="legal-p">We use only technically necessary cookies required for the site to function. We do not use tracking or advertising cookies. If we introduce analytics in the future, we will update this policy and request consent where required by law.</p>
-
         <h2 className="legal-h2">6. Data retention</h2>
         <p className="legal-p">Trip inputs are not stored after your session ends. Server logs retained by Vercel follow their standard retention policies. If you contact us by email, we retain that correspondence for as long as necessary to resolve your request.</p>
-
         <h2 className="legal-h2">7. Your rights</h2>
         <p className="legal-p">Depending on your location, you may have rights including access to, correction of, or deletion of any personal data we hold about you. Since we collect minimal data, in most cases there is nothing to delete. To exercise any rights, contact us at hello@hoppaway.app.</p>
-
         <h2 className="legal-h2">8. International users</h2>
         <p className="legal-p">HoppAway is accessible internationally. If you are located in the European Economic Area, the UK, or other regions with data protection laws, we process your data in accordance with applicable requirements. Our legal basis for processing is legitimate interest in providing the service you requested.</p>
-
         <h2 className="legal-h2">9. Children</h2>
         <p className="legal-p">HoppAway is not directed at children under 16. We do not knowingly collect data from minors.</p>
-
         <h2 className="legal-h2">10. Changes to this policy</h2>
         <p className="legal-p">We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated date. Continued use of the service after changes constitutes acceptance of the updated policy.</p>
-
         <h2 className="legal-h2">11. Contact</h2>
         <div className="legal-contact">
           <p>For any privacy-related questions or requests:<br/>
@@ -612,7 +573,6 @@ function PrivacyPage({ onBack }) {
     </>
   );
 }
-
 function TermsPage({ onBack }) {
   useEffect(() => { window.scrollTo(0,0); }, []);
   return (
@@ -627,13 +587,10 @@ function TermsPage({ onBack }) {
         <div className="legal-eyebrow">Legal</div>
         <h1 className="legal-title">Terms of Use</h1>
         <div className="legal-date">Last updated: March 2026</div>
-
         <h2 className="legal-h2">1. Acceptance of terms</h2>
         <p className="legal-p">By accessing or using HoppAway (hoppaway.app), you agree to be bound by these Terms of Use. If you do not agree, please do not use the service.</p>
-
         <h2 className="legal-h2">2. Description of service</h2>
         <p className="legal-p">HoppAway is a free AI-powered travel planning tool that generates day-by-day trip itineraries based on user inputs including destination, duration, and budget. The service is provided as-is for informational and inspirational purposes only.</p>
-
         <h2 className="legal-h2">3. AI-generated content disclaimer</h2>
         <p className="legal-p">All itineraries, recommendations, price estimates, hostel names, transport details, and other content generated by HoppAway are produced by an artificial intelligence model. This content:</p>
         <ul className="legal-ul">
@@ -643,10 +600,8 @@ function TermsPage({ onBack }) {
           <li>Should always be independently verified before making any booking or travel decision.</li>
         </ul>
         <p className="legal-p">HoppAway is not responsible for any loss, expense, or inconvenience arising from reliance on AI-generated content.</p>
-
         <h2 className="legal-h2">4. Affiliate links</h2>
         <p className="legal-p">HoppAway includes links to third-party booking platforms (including but not limited to Skyscanner, Hostelworld, Booking.com, GetYourGuide, SafetyWing, and Airalo). These are affiliate links — HoppAway may earn a commission if you make a purchase through them, at no additional cost to you. We are not responsible for the content, pricing, or availability on third-party sites.</p>
-
         <h2 className="legal-h2">5. Acceptable use</h2>
         <p className="legal-p">You agree not to use HoppAway to:</p>
         <ul className="legal-ul">
@@ -654,22 +609,16 @@ function TermsPage({ onBack }) {
           <li>Circumvent any technical measures or limitations of the service.</li>
           <li>Use the service for any unlawful purpose.</li>
         </ul>
-
         <h2 className="legal-h2">6. Intellectual property</h2>
         <p className="legal-p">The HoppAway brand, logo, and interface design are the property of the service operator. AI-generated itinerary content is provided to you for personal use. You may not resell or republish itineraries as your own commercial product.</p>
-
         <h2 className="legal-h2">7. Limitation of liability</h2>
         <p className="legal-p">To the maximum extent permitted by applicable law, HoppAway and its operator shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the service, including but not limited to travel disruptions, financial losses, or reliance on inaccurate AI-generated content.</p>
-
         <h2 className="legal-h2">8. Availability</h2>
         <p className="legal-p">We do not guarantee uninterrupted availability of the service. HoppAway may be temporarily unavailable due to maintenance, API outages, or other technical issues. We reserve the right to modify or discontinue the service at any time.</p>
-
         <h2 className="legal-h2">9. Governing law</h2>
         <p className="legal-p">These terms are governed by applicable law. As HoppAway operates internationally without a fixed legal jurisdiction at this time, we aim to comply with the laws of the user's location to the extent reasonably practicable.</p>
-
         <h2 className="legal-h2">10. Changes to terms</h2>
         <p className="legal-p">We may update these Terms of Use at any time. Updated terms will be posted on this page with a revised date. Continued use of the service constitutes acceptance of the updated terms.</p>
-
         <h2 className="legal-h2">11. Contact</h2>
         <div className="legal-contact">
           <p>For any questions about these terms:<br/>
@@ -693,7 +642,6 @@ function TermsPage({ onBack }) {
     </>
   );
 }
-
 export default function HoppAway() {
   const [page, setPage] = useState(() => {
     const p = window.location.pathname;
@@ -701,7 +649,6 @@ export default function HoppAway() {
     if (p === "/terms") return "terms";
     return "app";
   });
-
   useEffect(() => {
     const handler = () => {
       const p = window.location.pathname;
@@ -712,24 +659,20 @@ export default function HoppAway() {
     window.addEventListener("popstate", handler);
     return () => window.removeEventListener("popstate", handler);
   }, []);
-
   const goTo = (path) => {
     window.history.pushState({}, "", path);
     if (path === "/privacy") setPage("privacy");
     else if (path === "/terms") setPage("terms");
     else setPage("app");
   };
-
   if (page === "privacy") return <PrivacyPage onBack={() => goTo("/")} />;
   if (page === "terms") return <TermsPage onBack={() => goTo("/")} />;
   return <AppMain goTo={goTo} />;
 }
-
 function AppMain({ goTo }) {
   const [form, setForm] = useState({ destination: "", days: "7", budget: "500", currency: "EUR", from: "", stops: "2" });
   const [headerHidden, setHeaderHidden] = useState(false);
   const lastScrollY = useRef(0);
-
   useEffect(() => {
     const handleScroll = () => {
       const current = window.scrollY;
@@ -751,17 +694,14 @@ function AppMain({ goTo }) {
   const [locked, setLocked] = useState(new Set());
   const [open, setOpen] = useState({});
   const [error, setError] = useState(null);
-  const [view, setView] = useState("form"); // "form" | "result"
-
+  const [view, setView] = useState("form");
   const [loadStep, setLoadStep] = useState(0);
   const dragIdx = useRef(null);
   const [dragOver, setDragOver] = useState(null);
   const touchIdx = useRef(null);
-
   const toggleOpen = (i) => setOpen(p => ({ ...p, [i]: !p[i] }));
   const toggleLock = (i) => setLocked(p => { const n = new Set(p); n.has(i) ? n.delete(i) : n.add(i); return n; });
   const activeStops = useCustom ? (parseInt(customStops) || 2) : parseInt(form.stops);
-
   const buildPrompt = (lockedDays = []) => {
     const lockedCtx = lockedDays.length > 0
       ? `\n\nFIXED DAYS (keep these exactly):\n${lockedDays.map(d => `- Day ${d.day}: ${d.title} | sleep: ${d.accommodation} | food: ${d.food} | transport: ${d.transport} | do: ${d.activities}`).join("\n")}`
@@ -770,26 +710,20 @@ function AppMain({ goTo }) {
     const paceCtx = pace === "chill" ? "relaxed pace (2-3 activities/day, plenty of downtime)" : pace === "intense" ? "packed schedule (maximize sights and experiences each day)" : "balanced pace (4-5 activities/day, mix of planned and free time)";
     const styleCtx = travelStyle.length > 0 ? `Travel style preferences: ${travelStyle.join(", ")}.` : "";
     return `You are HoppAway, a budget backpacker trip planner. Generate a ${form.days}-day itinerary for a ${whoCtx} going to ${form.destination}${form.from ? ` from ${form.from}` : ""}, total budget ${form.budget} ${form.currency}. Pace: ${paceCtx}. ${styleCtx}
-
 DESTINATION TYPE — critical:
 - If "${form.destination}" is a SINGLE CITY (e.g. "Tokyo", "Rome", "Bangkok", "Chiang Mai"): ignore the stops count. Organize by NEIGHBORHOODS or ZONES within that city. Each day explores a different area/quarter. The "title" field = neighborhood name (e.g. "Asakusa & Ueno"), not a different city.
 - If it's a COUNTRY or REGION (e.g. "Vietnam", "Southeast Asia", "Portugal", "Balkans"): distribute ${form.days} days across ${activeStops} distinct cities/towns, allocating days proportionally.
 - These are FULL DAYS AT DESTINATION — flights and arrival/departure days are NOT included.${lockedCtx}
-
 TRANSPORT — be specific, not generic:
 - Inter-city legs: name exact transport (train/bus/boat/sleeper), operator/line if known, approx duration, estimated cost in ${form.currency}. E.g. "Hanoi → Hue: Reunification Express SE3, overnight sleeper ~10h, ~$18. Book on 12go.asia."
 - Within city/zone: name best local options with realistic per-trip costs. E.g. "BTS Skytrain day pass ~$3; Grab motorbike ~$1-2/ride."
-
 ACCOMMODATION — name a real hostel (dorm bed), not just "budget hostel". Include approx nightly price.
 FOOD — name actual street food dishes and spots, not generic descriptions. Include price estimates.
 ACTIVITIES — name real attractions, free vs. paid. Give entry prices where relevant.
-
 Respond ONLY with valid JSON (no markdown, no explanation):
 {"destination":"string","days":number,"totalBudget":number,"currency":"string","estimatedTotal":number,"dailyAverage":number,"itinerary":[{"day":number,"title":"string","location":"string","estimatedCost":number,"accommodation":"string","accommodationPrice":"string","food":"string","foodPrice":"string","transport":"string","activities":"string"}],"backpackerTips":["tip1","tip2","tip3","tip4","tip5"]}
-
 The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tokyo"). No tourist traps. Real backpacker intel.`;
   };
-
   const callAPI = async (prompt) => {
     const res = await fetch("/api/generate", {
       method: "POST",
@@ -800,7 +734,6 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
     if (data.error) throw new Error(data.error);
     return parseItinerary(data.text || "");
   };
-
   const handleGenerate = async () => {
     if (!form.destination || !form.days || !form.budget) return;
     setLoading(true); setResult(null); setItinerary([]); setLocked(new Set()); setError(null);
@@ -813,7 +746,6 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
     } catch (e) { setError("Something went wrong. Check your connection."); }
     finally { setLoading(false); }
   };
-
   const handleRegen = async () => {
     setRegenLoading(true); setError(null);
     try {
@@ -826,7 +758,6 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
     } catch (e) { setError("Something went wrong."); }
     finally { setRegenLoading(false); }
   };
-
   const reorder = (from, to) => {
     const list = [...itinerary];
     const [moved] = list.splice(from, 1);
@@ -841,7 +772,6 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
     setLocked(nl);
     setItinerary(list.map((d, i) => ({ ...d, day: i + 1 })));
   };
-
   const onDragStart = (i) => { dragIdx.current = i; };
   const onDragOver = (e, i) => { e.preventDefault(); setDragOver(i); };
   const onDrop = (i) => {
@@ -849,7 +779,6 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
     dragIdx.current = null; setDragOver(null);
   };
   const onTouchStart = (e, i) => { touchIdx.current = i; };
-  // step animation during loading
   useEffect(() => {
     if (!loading) { setLoadStep(0); return; }
     setLoadStep(0);
@@ -860,19 +789,15 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
     ];
     return () => timers.forEach(clearTimeout);
   }, [loading]);
-
   const hasOpenCards = Object.values(open).some(Boolean);
   const cardRefs = useRef([]);
   const scrollRAF = useRef(null);
-
   const onTouchMove = useCallback((e) => {
     if (touchIdx.current === null) return;
     e.preventDefault();
     const y = e.touches[0].clientY;
     const ZONE = 90;
     const SPEED = 7;
-
-    // auto-scroll when near top or bottom of viewport
     if (scrollRAF.current) cancelAnimationFrame(scrollRAF.current);
     const doScroll = () => {
       if (touchIdx.current === null) return;
@@ -880,31 +805,24 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
       else if (y > window.innerHeight - ZONE) { window.scrollBy(0, SPEED); scrollRAF.current = requestAnimationFrame(doScroll); }
     };
     doScroll();
-
-    // detect which card the finger is over
     cardRefs.current.forEach((card, idx) => {
       if (!card) return;
       const r = card.getBoundingClientRect();
       if (y >= r.top && y <= r.bottom && idx !== touchIdx.current) setDragOver(idx);
     });
   }, []);
-
   const onTouchEnd = () => {
     if (scrollRAF.current) { cancelAnimationFrame(scrollRAF.current); scrollRAF.current = null; }
     if (touchIdx.current !== null && dragOver !== null && touchIdx.current !== dragOver) reorder(touchIdx.current, dragOver);
     touchIdx.current = null; setDragOver(null);
   };
-
   const budgetLeft = result ? result.totalBudget - result.estimatedTotal : 0;
-
   const handleBack = () => {
     setView("form"); setResult(null); setItinerary([]); setLocked(new Set()); setError(null);
   };
-
   return (
     <>
       <style>{css}</style>
-
       {/* HEADER */}
       <header className={`hdr${headerHidden ? " hidden" : ""}`}>
         <div className="logo" onClick={() => { if(view==="result") handleBack(); }} style={{cursor: view==="result" ? "pointer" : "default"}}>Hopp<em>Away</em></div>
@@ -915,8 +833,7 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
         </div>
       </header>
       <div className="hdr-spacer" />
-
-      {/* MARQUEE — always visible */}
+      {/* MARQUEE */}
       <div className="marquee-wrap">
         <div className="marquee-track">
           {["Hanoi → Hue night train $18","Hostel dorm €12/night Lisbon","Tuk-tuk Phnom Penh $1/ride","Overnight bus Buenos Aires → Mendoza $22","Dosa breakfast $0.80 Chennai","Ferry Split → Hvar €10","Hostel Kathmandu $5/night","Metro day pass Prague €4","Night bus Nairobi → Mombasa $8","Couchette Paris → Barcelona €35","Street tacos $1.50 Mexico City","Shared taxi Marrakech → Fès $6","Hostel dorm $9/night Cape Town","Minibus Tbilisi → Yerevan $12","Pad thai $1.80 Bangkok","Night ferry Athens → Santorini €40",
@@ -926,7 +843,6 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
           ))}
         </div>
       </div>
-
       {/* ── FORM VIEW ── */}
       {view === "form" && !loading && (
         <>
@@ -936,23 +852,16 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
               Plan.<br />
               <em>Go.</em>
             </h1>
+            {/* FIX 1+2: rimosso hero-pills, aggiornato testo hero-desc */}
             <p className="hero-desc">
-              Enter destination, days and budget — get a full itinerary with real hostels, exact transport and street food.
+              Drop your destination, number of days, budget and travel style — get a full day-by-day itinerary in seconds.
             </p>
-            <div className="hero-pills">
-              <div className="pill">⚡ AI itinerary</div>
-              <div className="pill">🏨 Real hostels</div>
-              <div className="pill">🚌 Exact trains</div>
-              <div className="pill">💸 Hard budget</div>
-              <div className="pill">🚫 No tourist traps</div>
-              <div className="pill">🔄 Lock & regen</div>
-            </div>
           </div>
-
           {/* HOW IT WORKS STRIP */}
+          {/* FIX 3: titolo aggiornato */}
           <div className="hiw-strip">
             <div className="hiw-strip-inner">
-              <div className="hiw-strip-title">How it works</div>
+              <div className="hiw-strip-title">Your trip, planned in seconds.</div>
               <div className="hiw-strip-steps">
                 <div className="hiw-strip-step">
                   <div className="hiw-strip-n">1</div>
@@ -972,7 +881,6 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
               </div>
             </div>
           </div>
-
           <div className="form-wrap">
             <div className="fcard">
               <span className="fcard-label">Your trip</span>
@@ -1007,9 +915,7 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
                   </select>
                 </div>
               </div>
-
               <hr className="fdivider" />
-
               <div className="stops-label">Stops / cities (for multi-city trips)</div>
               <div className="stops-row">
                 {STOP_PRESETS.map(n => (
@@ -1027,9 +933,7 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
                 </div>
               )}
               <div className="stops-hint">Single city? AI organizes by neighborhood instead of stops.</div>
-
               <hr className="fdivider" />
-
               {/* TRAVELING AS */}
               <div className="stops-label">Traveling as <span className="new-badge">NEW</span></div>
               <div className="who-row">
@@ -1043,9 +947,7 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
                   </div>
                 ))}
               </div>
-
               <hr className="fdivider" />
-
               {/* PACE */}
               <div className="stops-label">Pace <span className="new-badge">NEW</span></div>
               <div className="pace-row">
@@ -1060,9 +962,7 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
                   </div>
                 ))}
               </div>
-
               <hr className="fdivider" />
-
               {/* TRAVEL STYLE */}
               <div className="stops-label">Travel style <span className="new-badge">NEW</span></div>
               <div className="stops-hint" style={{marginBottom:"0.6rem"}}>Optional — select one or more</div>
@@ -1081,9 +981,7 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
                   </div>
                 ))}
               </div>
-
               <hr className="fdivider" />
-
               <div style={{
                 background: "#fffbf0", border: "1.5px solid rgba(245,200,66,.4)",
                 borderLeft: "3px solid var(--yellow)", padding: "0.75rem 0.9rem", marginTop: "0.8rem"
@@ -1092,18 +990,16 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
                   <strong style={{ color: "var(--orange)" }}>⚠ AI-generated content.</strong> This itinerary is created by an AI and is meant as inspiration. Prices, availability and transport schedules may differ from reality. Always verify before booking.
                 </p>
               </div>
-
               <button className="btn-gen" onClick={handleGenerate} disabled={!form.destination || !form.days || !form.budget}>
                 Generate my itinerary →
               </button>
               {error && <div className="err-card">⚠ {error}</div>}
             </div>
           </div>
-
           {/* HOW IT WORKS */}
           <div className="how-section">
             <div className="sec-eyebrow">How it works</div>
-            <h2 className="sec-title">Three inputs.<br />One perfect trip.</h2>
+            <h2 className="sec-title">Your trip,<br />planned in seconds.</h2>
             <p className="sec-sub">No 47-step wizard, no account needed. Tell us where, how long and how much — we do the rest.</p>
             <div className="steps-grid">
               <div className="step">
@@ -1132,30 +1028,45 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
               </div>
             </div>
           </div>
-
           {/* BOOK EVERYTHING PREVIEW */}
+          {/* FIX 4: badge mobile — testo abbreviato su schermi piccoli, layout migliorato */}
           <div className="how-section" style={{ paddingTop: 0 }}>
             <div className="sec-eyebrow">Book everything</div>
             <h2 className="sec-title">From itinerary<br />to packed bag.</h2>
             <p className="sec-sub">Every itinerary comes with direct links to book flights, hostels, tours, insurance and eSIM — all in one place.</p>
-            <div className="book-grid" style={{ gridTemplateColumns:"repeat(4,1fr)" }}>
+            <div className="book-grid">
               {[
                 { ico:"✈️", name:"Skyscanner",     desc:"Cheapest flights",            color:"#00a1e4", url:"https://www.skyscanner.net",                                                                   tracked:false },
-                { ico:"🛏️", name:"Hostelworld",     desc:"Best backpacker hostels",     color:"#ff6600", url:"https://www.hostelworld.com",                                                                  tracked:false },
-                { ico:"🏨", name:"Booking.com",     desc:"Hotels & guesthouses",        color:"#003580", url:"https://www.booking.com",                                                                      tracked:false },
-                { ico:"🎟️", name:"Klook",           desc:"Tours & experiences",         color:"#ff5c00", url:"https://klook.tpk.ro/J5hfsGxE",                                                              tracked:true  },
-                { ico:"🎫", name:"Tiqets",          desc:"Instant attraction tickets",  color:"#00c9a7", url:"https://tiqets.tpk.ro/4RXYWxDP",                                                             tracked:true  },
-                { ico:"📱", name:"Airalo eSIM",     desc:"Data in 200+ countries",      color:"#ff6b35", url:"https://airalo.tpk.ro/VimxbpvE",                                                             tracked:true  },
-                { ico:"📶", name:"Yesim eSIM",      desc:"Global eSIM, no roaming",     color:"#f5c842", url:"https://yesim.tpk.ro/lWijEzSF",                                                              tracked:true  },
-                { ico:"🔒", name:"NordVPN",         desc:"Secure on hostel WiFi",       color:"#4687ff", url:"https://nordvpn.tpk.ro/T31UJ2Gs",                                                            tracked:true  },
-                { ico:"🛡️", name:"AirHelp",         desc:"Claim flight compensation",   color:"#e63946", url:"https://airhelp.tpk.ro/sv4awXuZ",                                                            tracked:true  },
-                { ico:"🚖", name:"Welcome Pickups", desc:"Reliable airport transfers",  color:"#1a9e6e", url:"https://tpk.ro/LWp4zUOj",                                                                    tracked:true  },
-                { ico:"🚕", name:"Kiwitaxi",        desc:"Transfers in 100+ countries", color:"#d4a800", url:"https://kiwitaxi.tpk.ro/hZm8E5GW",                                                           tracked:true  },
-                { ico:"🧳", name:"Radical Storage", desc:"Luggage storage in the city", color:"#f5a623", url:"https://radicalstorage.tpk.ro/5hC6QiSS",                                                     tracked:true  },
-                { ico:"🌍", name:"SafetyWing",      desc:"Insurance for nomads",        color:"#1d7a6e", url:"https://safetywing.com/?referenceID=26489043&utm_source=26489043&utm_medium=Ambassador",      tracked:true  },
+                { ico:"🛏️", name:"Hostelworld",    desc:"Best backpacker hostels",     color:"#ff6600", url:"https://www.hostelworld.com",                                                                  tracked:false },
+                { ico:"🏨", name:"Booking.com",    desc:"Hotels & guesthouses",        color:"#003580", url:"https://www.booking.com",                                                                      tracked:false },
+                { ico:"🎟️", name:"Klook",          desc:"Tours & experiences",         color:"#ff5c00", url:"https://klook.tpk.ro/J5hfsGxE",                                                              tracked:true  },
+                { ico:"🎫", name:"Tiqets",         desc:"Attraction tickets",          color:"#00c9a7", url:"https://tiqets.tpk.ro/4RXYWxDP",                                                             tracked:true  },
+                { ico:"📱", name:"Airalo eSIM",    desc:"Data in 200+ countries",      color:"#ff6b35", url:"https://airalo.tpk.ro/VimxbpvE",                                                             tracked:true  },
+                { ico:"📶", name:"Yesim eSIM",     desc:"Global eSIM, no roaming",     color:"#f5c842", url:"https://yesim.tpk.ro/lWijEzSF",                                                              tracked:true  },
+                { ico:"🔒", name:"NordVPN",        desc:"Secure on hostel WiFi",       color:"#4687ff", url:"https://nordvpn.tpk.ro/T31UJ2Gs",                                                            tracked:true  },
+                { ico:"🛡️", name:"AirHelp",        desc:"Flight compensation",         color:"#e63946", url:"https://airhelp.tpk.ro/sv4awXuZ",                                                            tracked:true  },
+                { ico:"🚖", name:"Welcome Pickups",desc:"Airport transfers",           color:"#1a9e6e", url:"https://tpk.ro/LWp4zUOj",                                                                    tracked:true  },
+                { ico:"🚕", name:"Kiwitaxi",       desc:"Transfers worldwide",         color:"#d4a800", url:"https://kiwitaxi.tpk.ro/hZm8E5GW",                                                           tracked:true  },
+                { ico:"🧳", name:"Radical Storage",desc:"Luggage storage",             color:"#f5a623", url:"https://radicalstorage.tpk.ro/5hC6QiSS",                                                     tracked:true  },
+                { ico:"🌍", name:"SafetyWing",     desc:"Insurance for nomads",        color:"#1d7a6e", url:"https://safetywing.com/?referenceID=26489043&utm_source=26489043&utm_medium=Ambassador",      tracked:true  },
               ].map((s, i) => (
-                <a key={i} href={s.url} target="_blank" rel="noopener noreferrer" style={{ background:"var(--white)", border:"1.5px solid var(--border)", borderLeft:`3px solid ${s.color}`, padding:"0.85rem 1rem", display:"flex", flexDirection:"column", gap:"0.2rem", textDecoration:"none", position:"relative" }}>
-                  <span style={{ position:"absolute", top:"0.45rem", right:"0.45rem", fontFamily:"var(--fm)", fontSize:"0.42rem", letterSpacing:"0.06em", textTransform:"uppercase", padding:"0.15rem 0.35rem", borderRadius:"2px", background: s.tracked ? "#e8f5e9" : "var(--sand)", color: s.tracked ? "#2e7d32" : "var(--muted)" }}>{s.tracked ? "✓ affiliate" : "soon tracked"}</span>
+                <a key={i} href={s.url} target="_blank" rel="noopener noreferrer"
+                  style={{
+                    background:"var(--white)", border:"1.5px solid var(--border)",
+                    borderLeft:`3px solid ${s.color}`, padding:"0.85rem 1rem",
+                    display:"flex", flexDirection:"column", gap:"0.2rem",
+                    textDecoration:"none", position:"relative",
+                    paddingTop:"1.8rem"
+                  }}>
+                  {/* FIX 4: badge separato dall'emoji, posizionato in alto */}
+                  <span style={{
+                    position:"absolute", top:"0.4rem", left:"0.5rem", right:"0.5rem",
+                    fontFamily:"var(--fm)", fontSize:"0.4rem",
+                    letterSpacing:"0.05em", textTransform:"uppercase",
+                    padding:"0.12rem 0.3rem", display:"inline-block", width:"fit-content",
+                    background: s.tracked ? "#e8f5e9" : "var(--sand)",
+                    color: s.tracked ? "#2e7d32" : "var(--muted)"
+                  }}>{s.tracked ? "✓ affiliate" : "coming soon"}</span>
                   <span style={{ fontSize:"1.3rem", lineHeight:1, marginBottom:"0.25rem" }}>{s.ico}</span>
                   <span style={{ fontFamily:"var(--fm)", fontWeight:700, fontSize:"0.72rem", color:"var(--ink)" }}>{s.name}</span>
                   <span style={{ fontFamily:"var(--fm)", fontSize:"0.58rem", color:"var(--muted)", lineHeight:1.5 }}>{s.desc}</span>
@@ -1165,7 +1076,6 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
           </div>
         </>
       )}
-
       {/* ── LOADING ── */}
       {loading && (
         <div className="loading-wrap">
@@ -1190,7 +1100,6 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
           </div>
         </div>
       )}
-
       {/* ── RESULT VIEW ── */}
       {view === "result" && result && !loading && (
         <div className="result-wrap">
@@ -1206,7 +1115,6 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
               {activeStops > 1 && <span className="trip-chip">{activeStops} stops</span>}
             </div>
           </div>
-
           {/* budget bar */}
           <div className="budget-bar">
             <div className="bitem">
@@ -1224,15 +1132,11 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
               <div className="bvalue t">{budgetLeft} {result.currency}</div>
             </div>
           </div>
-
-          {/* drag hint when cards open */}
           {hasOpenCards && (
             <div style={{ fontFamily:"var(--fm)", fontSize:"0.6rem", color:"var(--muted)", textAlign:"center", padding:"0.4rem 0", marginBottom:"0.3rem", background:"rgba(245,240,232,.6)", border:"1px solid var(--border)" }}>
               ↕ Close cards to reorder days
             </div>
           )}
-
-          {/* regen bar */}
           <div className="regen-bar">
             <div className="regen-info">
               🔒 Lock days you love — only <strong>unlocked</strong> days regenerate.
@@ -1244,10 +1148,7 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
               ) : "↻ Regenerate"}
             </button>
           </div>
-
           {error && <div className="err-card">⚠ {error}</div>}
-
-          {/* day cards */}
           {itinerary.map((day, i) => (
             <div key={`${i}-${day.title}`}
               ref={el => cardRefs.current[i] = el}
@@ -1275,32 +1176,26 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
                 <span className="day-cost">{day.estimatedCost} {result.currency}</span>
                 <span className="chev">▼</span>
               </div>
-
               {open[i] && (
                 <div className="day-body">
-                  {/* sleep */}
                   <div className="dsec">
                     <div className="dsec-title">🏨 Sleep</div>
                     <div className="dsec-body">{day.accommodation}</div>
                     {day.accommodationPrice && <div className="dsec-price">{day.accommodationPrice}</div>}
                   </div>
-                  {/* eat */}
                   <div className="dsec">
                     <div className="dsec-title">🍜 Eat</div>
                     <div className="dsec-body">{day.food}</div>
                     {day.foodPrice && <div className="dsec-price">{day.foodPrice}</div>}
                   </div>
-                  {/* transport */}
                   <div className="transport-block">
                     <div className="dsec-title">🚌 Getting around</div>
                     <div className="dsec-body">{day.transport}</div>
                   </div>
-                  {/* do */}
                   <div className="dsec">
                     <div className="dsec-title">🎒 Do</div>
                     <div className="dsec-body">{day.activities}</div>
                   </div>
-                  {/* budget on track indicator */}
                   {day.estimatedCost <= (result.dailyAverage * 1.1) && (
                     <div className="on-track">✓ Budget on track</div>
                   )}
@@ -1308,8 +1203,6 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
               )}
             </div>
           ))}
-
-          {/* backpacker tips */}
           {result.backpackerTips?.length > 0 && (
             <div className="tips-card">
               <div className="tips-title">⚡ Backpacker hacks for {result.destination}</div>
@@ -1321,19 +1214,14 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
               ))}
             </div>
           )}
-
-          {/* affiliates */}
           <div className="aff-section" style={{ padding: 0, marginTop: "1.5rem" }}>
             <AffiliateSection destination={result.destination} from={form.from} />
           </div>
-
-          {/* disclaimer */}
           <div className="disclaimer">
             <p><strong>⚠ Estimates only.</strong> Prices, availability and conditions change frequently. Always verify before booking. HoppAway is not responsible for discrepancies between estimated and actual costs.</p>
           </div>
         </div>
       )}
-
       {/* FOOTER */}
       <footer className="footer">
         <div className="footer-row1">
