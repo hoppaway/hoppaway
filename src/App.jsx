@@ -319,6 +319,7 @@ const css = `
 
   /* ─── HOW IT WORKS STRIP ─── */
   .hiw-strip { background: var(--sand); border-top: 1.5px solid var(--border); border-bottom: 1.5px solid var(--border); padding: 1.2rem 1.5rem; max-width: 100%; margin-bottom: 2rem; }
+  .hiw-strip-inner { max-width: 480px; margin: 0 auto; }
   .hiw-strip-title { font-family: var(--fm); font-size: 0.5rem; color: var(--rust); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.35rem; }
   .hiw-strip-title::before { content: '◆'; font-size: 0.38rem; }
   .hiw-strip-steps { display: flex; position: relative; max-width: 700px; margin: 0 auto; }
@@ -498,7 +499,214 @@ function parseItinerary(text) {
   return null;
 }
 
+const legalCss = `
+  .legal-wrap { max-width: 680px; margin: 0 auto; padding: 2rem 1.5rem 4rem; font-family: var(--fm); color: var(--ink); }
+  .legal-back { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--fm); font-size: 0.65rem; color: var(--muted); text-decoration: none; border: 1.5px solid var(--border); padding: 0.4rem 0.8rem; margin-bottom: 2rem; background: var(--sand); cursor: pointer; }
+  .legal-back:hover { background: var(--ink); color: var(--sand); }
+  .legal-eyebrow { font-size: 0.55rem; color: var(--rust); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.6rem; }
+  .legal-title { font-family: var(--ff); font-size: 2.2rem; font-weight: 900; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 0.4rem; }
+  .legal-date { font-size: 0.6rem; color: var(--muted); margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1.5px solid var(--border); }
+  .legal-h2 { font-family: var(--ff); font-size: 1.1rem; font-weight: 700; margin: 2rem 0 0.6rem; color: var(--ink); }
+  .legal-p { font-size: 0.78rem; line-height: 1.9; color: var(--brown); margin-bottom: 0.8rem; }
+  .legal-ul { padding-left: 1.2rem; margin-bottom: 0.8rem; }
+  .legal-ul li { font-size: 0.78rem; line-height: 1.9; color: var(--brown); margin-bottom: 0.3rem; }
+  .legal-contact { background: var(--sand); border: 1.5px solid var(--border); border-left: 3px solid var(--rust); padding: 1rem 1.2rem; margin-top: 2rem; }
+  .legal-contact p { font-size: 0.75rem; line-height: 1.8; color: var(--brown); }
+  .legal-contact a { color: var(--rust); }
+`;
+
+function PrivacyPage({ onBack }) {
+  useEffect(() => { window.scrollTo(0,0); }, []);
+  return (
+    <>
+      <style>{css}{legalCss}</style>
+      <header className="hdr">
+        <div className="logo" onClick={onBack} style={{cursor:"pointer"}}>Hopp<em>Away</em></div>
+      </header>
+      <div className="legal-wrap">
+        <button className="legal-back" onClick={onBack}>← Back to app</button>
+        <div className="legal-eyebrow">Legal</div>
+        <h1 className="legal-title">Privacy Policy</h1>
+        <div className="legal-date">Last updated: March 2026</div>
+
+        <h2 className="legal-h2">1. Who we are</h2>
+        <p className="legal-p">HoppAway (hoppaway.app) is an AI-powered travel planning tool built and operated by a solo founder. We are not a registered company at this time. For any privacy-related questions, contact us at hello@hoppaway.app.</p>
+
+        <h2 className="legal-h2">2. What data we collect</h2>
+        <p className="legal-p">We collect only the minimum data necessary to provide the service:</p>
+        <ul className="legal-ul">
+          <li>Trip inputs you enter in the form (destination, days, budget, preferences) — processed in real time to generate your itinerary and not stored on our servers.</li>
+          <li>Anonymous usage data (pages visited, interactions) via analytics tools, if enabled. This data is aggregated and never linked to an individual.</li>
+          <li>Cookies strictly necessary for the functioning of the site.</li>
+        </ul>
+        <p className="legal-p">We do not collect your name, email address, or any account information unless you voluntarily contact us.</p>
+
+        <h2 className="legal-h2">3. How we use your data</h2>
+        <ul className="legal-ul">
+          <li>To generate your AI trip itinerary in response to your inputs.</li>
+          <li>To understand how the product is used and improve it over time.</li>
+          <li>To respond to messages sent to hello@hoppaway.app.</li>
+        </ul>
+        <p className="legal-p">We do not sell, rent, or share your personal data with third parties for marketing purposes.</p>
+
+        <h2 className="legal-h2">4. Third-party services</h2>
+        <p className="legal-p">HoppAway uses the following third-party services which may process data on our behalf:</p>
+        <ul className="legal-ul">
+          <li><strong>Anthropic API</strong> — processes your trip inputs to generate itineraries. Anthropic's privacy policy applies to this processing.</li>
+          <li><strong>Vercel</strong> — hosts the application and may log standard server access data (IP address, browser type, timestamp).</li>
+          <li><strong>Affiliate partners</strong> (Skyscanner, Hostelworld, Booking.com, GetYourGuide, etc.) — when you click a booking link, you are redirected to their sites under their own privacy policies.</li>
+        </ul>
+
+        <h2 className="legal-h2">5. Cookies</h2>
+        <p className="legal-p">We use only technically necessary cookies required for the site to function. We do not use tracking or advertising cookies. If we introduce analytics in the future, we will update this policy and request consent where required by law.</p>
+
+        <h2 className="legal-h2">6. Data retention</h2>
+        <p className="legal-p">Trip inputs are not stored after your session ends. Server logs retained by Vercel follow their standard retention policies. If you contact us by email, we retain that correspondence for as long as necessary to resolve your request.</p>
+
+        <h2 className="legal-h2">7. Your rights</h2>
+        <p className="legal-p">Depending on your location, you may have rights including access to, correction of, or deletion of any personal data we hold about you. Since we collect minimal data, in most cases there is nothing to delete. To exercise any rights, contact us at hello@hoppaway.app.</p>
+
+        <h2 className="legal-h2">8. International users</h2>
+        <p className="legal-p">HoppAway is accessible internationally. If you are located in the European Economic Area, the UK, or other regions with data protection laws, we process your data in accordance with applicable requirements. Our legal basis for processing is legitimate interest in providing the service you requested.</p>
+
+        <h2 className="legal-h2">9. Children</h2>
+        <p className="legal-p">HoppAway is not directed at children under 16. We do not knowingly collect data from minors.</p>
+
+        <h2 className="legal-h2">10. Changes to this policy</h2>
+        <p className="legal-p">We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated date. Continued use of the service after changes constitutes acceptance of the updated policy.</p>
+
+        <h2 className="legal-h2">11. Contact</h2>
+        <div className="legal-contact">
+          <p>For any privacy-related questions or requests:<br/>
+          📧 <a href="mailto:hello@hoppaway.app">hello@hoppaway.app</a><br/>
+          We aim to respond within 5 business days.</p>
+        </div>
+      </div>
+      <footer className="footer">
+        <div className="footer-row1">
+          <div className="footer-logo">Hopp<em>Away</em></div>
+          <a href="mailto:hello@hoppaway.app" className="footer-email">hello@hoppaway.app</a>
+        </div>
+        <div className="footer-row2">
+          <span className="footer-tagline">built with ♥ for backpackers</span>
+          <div className="footer-links">
+            <span onClick={onBack} style={{cursor:"pointer"}}>← App</span>
+            <span>© 2026</span>
+          </div>
+        </div>
+      </footer>
+    </>
+  );
+}
+
+function TermsPage({ onBack }) {
+  useEffect(() => { window.scrollTo(0,0); }, []);
+  return (
+    <>
+      <style>{css}{legalCss}</style>
+      <header className="hdr">
+        <div className="logo" onClick={onBack} style={{cursor:"pointer"}}>Hopp<em>Away</em></div>
+      </header>
+      <div className="legal-wrap">
+        <button className="legal-back" onClick={onBack}>← Back to app</button>
+        <div className="legal-eyebrow">Legal</div>
+        <h1 className="legal-title">Terms of Use</h1>
+        <div className="legal-date">Last updated: March 2026</div>
+
+        <h2 className="legal-h2">1. Acceptance of terms</h2>
+        <p className="legal-p">By accessing or using HoppAway (hoppaway.app), you agree to be bound by these Terms of Use. If you do not agree, please do not use the service.</p>
+
+        <h2 className="legal-h2">2. Description of service</h2>
+        <p className="legal-p">HoppAway is a free AI-powered travel planning tool that generates day-by-day trip itineraries based on user inputs including destination, duration, and budget. The service is provided as-is for informational and inspirational purposes only.</p>
+
+        <h2 className="legal-h2">3. AI-generated content disclaimer</h2>
+        <p className="legal-p">All itineraries, recommendations, price estimates, hostel names, transport details, and other content generated by HoppAway are produced by an artificial intelligence model. This content:</p>
+        <ul className="legal-ul">
+          <li>May not reflect current prices, availability, or operating conditions.</li>
+          <li>May contain inaccuracies, outdated information, or hallucinated details.</li>
+          <li>Is intended as inspiration and a starting point, not as a definitive travel guide.</li>
+          <li>Should always be independently verified before making any booking or travel decision.</li>
+        </ul>
+        <p className="legal-p">HoppAway is not responsible for any loss, expense, or inconvenience arising from reliance on AI-generated content.</p>
+
+        <h2 className="legal-h2">4. Affiliate links</h2>
+        <p className="legal-p">HoppAway includes links to third-party booking platforms (including but not limited to Skyscanner, Hostelworld, Booking.com, GetYourGuide, SafetyWing, and Airalo). These are affiliate links — HoppAway may earn a commission if you make a purchase through them, at no additional cost to you. We are not responsible for the content, pricing, or availability on third-party sites.</p>
+
+        <h2 className="legal-h2">5. Acceptable use</h2>
+        <p className="legal-p">You agree not to use HoppAway to:</p>
+        <ul className="legal-ul">
+          <li>Attempt to reverse-engineer, scrape, or extract data from the service in bulk.</li>
+          <li>Circumvent any technical measures or limitations of the service.</li>
+          <li>Use the service for any unlawful purpose.</li>
+        </ul>
+
+        <h2 className="legal-h2">6. Intellectual property</h2>
+        <p className="legal-p">The HoppAway brand, logo, and interface design are the property of the service operator. AI-generated itinerary content is provided to you for personal use. You may not resell or republish itineraries as your own commercial product.</p>
+
+        <h2 className="legal-h2">7. Limitation of liability</h2>
+        <p className="legal-p">To the maximum extent permitted by applicable law, HoppAway and its operator shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the service, including but not limited to travel disruptions, financial losses, or reliance on inaccurate AI-generated content.</p>
+
+        <h2 className="legal-h2">8. Availability</h2>
+        <p className="legal-p">We do not guarantee uninterrupted availability of the service. HoppAway may be temporarily unavailable due to maintenance, API outages, or other technical issues. We reserve the right to modify or discontinue the service at any time.</p>
+
+        <h2 className="legal-h2">9. Governing law</h2>
+        <p className="legal-p">These terms are governed by applicable law. As HoppAway operates internationally without a fixed legal jurisdiction at this time, we aim to comply with the laws of the user's location to the extent reasonably practicable.</p>
+
+        <h2 className="legal-h2">10. Changes to terms</h2>
+        <p className="legal-p">We may update these Terms of Use at any time. Updated terms will be posted on this page with a revised date. Continued use of the service constitutes acceptance of the updated terms.</p>
+
+        <h2 className="legal-h2">11. Contact</h2>
+        <div className="legal-contact">
+          <p>For any questions about these terms:<br/>
+          📧 <a href="mailto:hello@hoppaway.app">hello@hoppaway.app</a><br/>
+          We aim to respond within 5 business days.</p>
+        </div>
+      </div>
+      <footer className="footer">
+        <div className="footer-row1">
+          <div className="footer-logo">Hopp<em>Away</em></div>
+          <a href="mailto:hello@hoppaway.app" className="footer-email">hello@hoppaway.app</a>
+        </div>
+        <div className="footer-row2">
+          <span className="footer-tagline">built with ♥ for backpackers</span>
+          <div className="footer-links">
+            <span onClick={onBack} style={{cursor:"pointer"}}>← App</span>
+            <span>© 2026</span>
+          </div>
+        </div>
+      </footer>
+    </>
+  );
+}
+
 export default function HoppAway() {
+  const [page, setPage] = useState(() => {
+    const p = window.location.pathname;
+    if (p === "/privacy") return "privacy";
+    if (p === "/terms") return "terms";
+    return "app";
+  });
+
+  useEffect(() => {
+    const handler = () => {
+      const p = window.location.pathname;
+      if (p === "/privacy") setPage("privacy");
+      else if (p === "/terms") setPage("terms");
+      else setPage("app");
+    };
+    window.addEventListener("popstate", handler);
+    return () => window.removeEventListener("popstate", handler);
+  }, []);
+
+  const goTo = (path) => {
+    window.history.pushState({}, "", path);
+    if (path === "/privacy") setPage("privacy");
+    else if (path === "/terms") setPage("terms");
+    else setPage("app");
+  };
+
+  if (page === "privacy") return <PrivacyPage onBack={() => goTo("/")} />;
+  if (page === "terms") return <TermsPage onBack={() => goTo("/")} />;
   const [form, setForm] = useState({ destination: "", days: "7", budget: "500", currency: "EUR", from: "", stops: "2" });
   const [useCustom, setUseCustom] = useState(false);
   const [customStops, setCustomStops] = useState("");
@@ -712,22 +920,24 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
 
           {/* HOW IT WORKS STRIP */}
           <div className="hiw-strip">
-            <div className="hiw-strip-title">How it works</div>
-            <div className="hiw-strip-steps">
-              <div className="hiw-strip-step">
-                <div className="hiw-strip-n">1</div>
-                <strong>Enter trip</strong>
-                <span>Destination, days, budget</span>
-              </div>
-              <div className="hiw-strip-step">
-                <div className="hiw-strip-n">2</div>
-                <strong>AI plans it</strong>
-                <span>Hostels, transport, food</span>
-              </div>
-              <div className="hiw-strip-step">
-                <div className="hiw-strip-n">3</div>
-                <strong>Tweak & go</strong>
-                <span>Lock days, regen rest</span>
+            <div className="hiw-strip-inner">
+              <div className="hiw-strip-title">How it works</div>
+              <div className="hiw-strip-steps">
+                <div className="hiw-strip-step">
+                  <div className="hiw-strip-n">1</div>
+                  <strong>Enter trip</strong>
+                  <span>Destination, days, budget</span>
+                </div>
+                <div className="hiw-strip-step">
+                  <div className="hiw-strip-n">2</div>
+                  <strong>AI plans it</strong>
+                  <span>Hostels, transport, food</span>
+                </div>
+                <div className="hiw-strip-step">
+                  <div className="hiw-strip-n">3</div>
+                  <strong>Tweak & go</strong>
+                  <span>Lock days, regen rest</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1094,8 +1304,8 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
         <div className="footer-row2">
           <span className="footer-tagline">built with ♥ for backpackers</span>
           <div className="footer-links">
-            <a href="/privacy">Privacy</a>
-            <a href="/terms">Terms</a>
+            <span onClick={() => goTo("/privacy")} style={{cursor:"pointer"}}>Privacy</span>
+            <span onClick={() => goTo("/terms")} style={{cursor:"pointer"}}>Terms</span>
             <span>© 2026</span>
           </div>
         </div>
