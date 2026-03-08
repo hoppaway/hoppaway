@@ -295,7 +295,7 @@ const css = `
   .tip { display: flex; gap: 0.6rem; margin-bottom: 0.6rem; font-size: 0.82rem; line-height: 1.65; color: var(--brown); }
   .tip-arr { color: var(--rust); flex-shrink: 0; font-family: var(--fm); font-size: 0.78rem; }
   /* ─── HOW IT WORKS STRIP ─── */
-  .hiw-strip { padding: 0 1.5rem 0; max-width: 700px; margin: 0 auto 2rem; }
+  .hiw-strip { max-width: 700px; margin: 0 auto 2rem; padding: 0 1.5rem 0; }
   .hiw-strip-inner { background: var(--sand); border: 1.5px solid var(--border); padding: 1.2rem 1.5rem; }
   .hiw-strip-title { font-family: var(--fm); font-size: 0.5rem; color: var(--rust); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.35rem; }
   .hiw-strip-title::before { content: '◆'; font-size: 0.38rem; }
@@ -413,6 +413,7 @@ const css = `
     .hdr { padding: calc(var(--safe-top) + 1.3rem) 2.5rem 1.3rem; }
     .hero-wrap { padding: 4rem 2.5rem 0; }
     .form-wrap { padding: 0 2.5rem 3.5rem; }
+    .hiw-strip { padding: 0 2.5rem 0; }
     .result-wrap { padding: 0 2.5rem 4.5rem; }
     .how-section { padding: 0 2.5rem 3.5rem; }
     .aff-section { padding: 0 2.5rem 3.5rem; }
