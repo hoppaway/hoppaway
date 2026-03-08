@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <clipPath id="c"><circle cx="32" cy="32" r="32"/></clipPath>
+  </defs>
+  <!-- cream background circle -->
+  <circle cx="32" cy="32" r="32" fill="#faf7f2"/>
+  <g clip-path="url(#c)">
+    <!-- rust shadow offset -->
+    <rect x="8" y="17" width="50" height="33" fill="#c94f1e" transform="rotate(-2 33 33)"/>
+    <!-- ink box -->
+    <rect x="6" y="14" width="50" height="33" fill="#1a1208" transform="rotate(-2 31 31)"/>
+    <!-- H in yellow, Playfair-style via font-family -->
+    <text
+      x="16" y="37"
+      font-family="Georgia, 'Times New Roman', serif"
+      font-size="28"
+      font-weight="700"
+      fill="#f5c842"
+      letter-spacing="-1"
+    >H</text>
+    <!-- A in rust, italic -->
+    <text
+      x="34" y="37"
+      font-family="Georgia, 'Times New Roman', serif"
+      font-size="28"
+      font-weight="700"
+      font-style="italic"
+      fill="#c94f1e"
+      letter-spacing="-1"
+    >A</text>
+  </g>
+</svg>
