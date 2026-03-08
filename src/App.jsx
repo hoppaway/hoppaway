@@ -48,8 +48,10 @@ const css = `
     position: fixed; top: 0; left: 0; right: 0; z-index: 200;
     background: rgba(250,247,242,0.96);
     backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    transition: transform 0.3s ease;
   }
-  .hdr-spacer { height: calc(var(--safe-top) + 3.8rem); }
+  .hdr.hidden { transform: translateY(-110%); }
+  .hdr-spacer { height: calc(var(--safe-top) + 5rem); }
   .logo { font-family: var(--ff); font-size: 1.4rem; font-weight: 900; letter-spacing: -0.03em; color: var(--ink); text-decoration: none; }
   .logo em { font-style: italic; color: var(--rust); }
   .hdr-right { display: flex; align-items: center; gap: 0.6rem; }
@@ -718,6 +720,18 @@ export default function HoppAway() {
 
 function AppMain({ goTo }) {
   const [form, setForm] = useState({ destination: "", days: "7", budget: "500", currency: "EUR", from: "", stops: "2" });
+  const [headerHidden, setHeaderHidden] = useState(false);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const current = window.scrollY;
+      setHeaderHidden(current > lastScrollY.current && current > 80);
+      lastScrollY.current = current;
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   const [useCustom, setUseCustom] = useState(false);
   const [customStops, setCustomStops] = useState("");
   const [travelingAs, setTravelingAs] = useState("solo");
@@ -885,7 +899,7 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
       <style>{css}</style>
 
       {/* HEADER */}
-      <header className="hdr">
+      <header className={`hdr${headerHidden ? " hidden" : ""}`}>
         <div className="logo" onClick={() => { if(view==="result") handleBack(); }} style={{cursor: view==="result" ? "pointer" : "default"}}>Hopp<em>Away</em></div>
         <div className="hdr-right">
           {view === "result" && (
