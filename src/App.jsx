@@ -318,8 +318,9 @@ const css = `
   .tip-arr { color: var(--rust); flex-shrink: 0; font-family: var(--fm); font-size: 0.78rem; }
 
   /* ─── HOW IT WORKS STRIP ─── */
-  .hiw-strip { background: var(--sand); border-top: 1.5px solid var(--border); border-bottom: 1.5px solid var(--border); padding: 1.2rem 1.5rem; max-width: 100%; margin-bottom: 2rem; }
-  .hiw-strip-inner { max-width: 480px; margin: 0 auto; }
+  .hiw-strip { padding: 0 1.5rem 0; max-width: 700px; margin: 0 auto 2rem; }
+  .hiw-strip-inner { background: var(--sand); border: 1.5px solid var(--border); padding: 1.2rem 1.5rem; }
+
   .hiw-strip-title { font-family: var(--fm); font-size: 0.5rem; color: var(--rust); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.35rem; }
   .hiw-strip-title::before { content: '◆'; font-size: 0.38rem; }
   .hiw-strip-steps { display: flex; position: relative; max-width: 700px; margin: 0 auto; }
@@ -707,6 +708,10 @@ export default function HoppAway() {
 
   if (page === "privacy") return <PrivacyPage onBack={() => goTo("/")} />;
   if (page === "terms") return <TermsPage onBack={() => goTo("/")} />;
+  return <AppMain goTo={goTo} />;
+}
+
+function AppMain({ goTo }) {
   const [form, setForm] = useState({ destination: "", days: "7", budget: "500", currency: "EUR", from: "", stops: "2" });
   const [useCustom, setUseCustom] = useState(false);
   const [customStops, setCustomStops] = useState("");
