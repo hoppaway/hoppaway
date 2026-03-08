@@ -463,12 +463,17 @@ const buildAffiliates = (destination, from) => {
       { ico:"🎡", name:"Klook", desc:"Activities, tours & experiences worldwide", cta:"Book →", color:"#ff5c00", url:"https://klook.tpk.ro/J5hfsGxE" },
       { ico:"🎟️", name:"Tiqets", desc:"Instant mobile tickets for top attractions", cta:"Get tickets →", color:"#00c9a7", url:"https://tiqets.tpk.ro/4RXYWxDP" },
     ]},
+    { cat: "🚗 Getting Around", items: [
+      { ico:"🚖", name:"Welcome Pickups", desc:"Reliable airport transfers worldwide", cta:"Book transfer →", color:"#1a9e6e", url:"https://tpk.ro/LWp4zUOj" },
+      { ico:"🚕", name:"Kiwitaxi", desc:"Airport transfers in 100+ countries", cta:"Book taxi →", color:"#f5c842", url:"https://kiwitaxi.tpk.ro/hZm8E5GW" },
+    ]},
     { cat: "🛡️ Travel Essentials", items: [
       { ico:"🌍", name:"SafetyWing", desc:"Travel insurance built for nomads & backpackers", cta:"Get covered →", color:"#1d7a6e", url:"https://safetywing.com/nomad-insurance" },
       { ico:"✈️", name:"AirHelp", desc:"Claim up to €600 for delayed or cancelled flights", cta:"Check claim →", color:"#e63946", url:"https://airhelp.tpk.ro/sv4awXuZ" },
       { ico:"📱", name:"Airalo eSIM", desc:"Local data in 200+ countries — no roaming", cta:"Get eSIM →", color:"#ff6b35", url:"https://airalo.tpk.ro/VimxbpvE" },
       { ico:"📶", name:"Yesim eSIM", desc:"Global eSIM with 18% off — 90 day guarantee", cta:"Get eSIM →", color:"#f5c842", url:"https://yesim.tpk.ro/lWijEzSF" },
       { ico:"🔒", name:"NordVPN", desc:"Stay secure on hostel & café WiFi", cta:"Get NordVPN →", color:"#4687ff", url:"https://nordvpn.tpk.ro/T31UJ2Gs" },
+      { ico:"🧳", name:"Radical Storage", desc:"Store your luggage anywhere in the city", cta:"Find storage →", color:"#f5a623", url:"https://radicalstorage.tpk.ro/5hC6QiSS" },
     ]},
   ];
 };
@@ -1135,17 +1140,24 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
             <p className="sec-sub">Every itinerary comes with direct links to book flights, hostels, tours, insurance and eSIM — all in one place.</p>
             <div className="book-grid">
               {[
-                { ico:"✈️", name:"Skyscanner", desc:"Cheapest flights", color:"#00a1e4", url:"https://www.skyscanner.net" },
-                { ico:"🛏️", name:"Hostelworld", desc:"Best backpacker hostels", color:"#ff6600", url:"https://www.hostelworld.com" },
-                { ico:"🏠", name:"Booking.com", desc:"Hotels & guesthouses", color:"#003580", url:"https://www.booking.com" },
-                { ico:"🎟️", name:"Klook", desc:"Tours & experiences", color:"#ff5c00", url:"https://klook.tpk.ro/J5hfsGxE" },
-                { ico:"📱", name:"Airalo eSIM", desc:"Data in 200+ countries", color:"#ff6b35", url:"https://airalo.tpk.ro/VimxbpvE" },
-                { ico:"🔒", name:"NordVPN", desc:"Secure on hostel WiFi", color:"#4687ff", url:"https://nordvpn.tpk.ro/T31UJ2Gs" },
+                { ico:"✈️", name:"Skyscanner",     desc:"Cheapest flights",            color:"#00a1e4", url:"https://www.skyscanner.net",              tracked:false },
+                { ico:"🛏️", name:"Hostelworld",     desc:"Best backpacker hostels",     color:"#ff6600", url:"https://www.hostelworld.com",            tracked:false },
+                { ico:"🏨", name:"Booking.com",     desc:"Hotels & guesthouses",        color:"#003580", url:"https://www.booking.com",                tracked:false },
+                { ico:"🎟️", name:"Klook",           desc:"Tours & experiences",         color:"#ff5c00", url:"https://klook.tpk.ro/J5hfsGxE",         tracked:true  },
+                { ico:"🎫", name:"Tiqets",          desc:"Instant attraction tickets",  color:"#00c9a7", url:"https://tiqets.tpk.ro/4RXYWxDP",        tracked:true  },
+                { ico:"📱", name:"Airalo eSIM",     desc:"Data in 200+ countries",      color:"#ff6b35", url:"https://airalo.tpk.ro/VimxbpvE",        tracked:true  },
+                { ico:"📶", name:"Yesim eSIM",      desc:"Global eSIM, no roaming",     color:"#f5c842", url:"https://yesim.tpk.ro/lWijEzSF",         tracked:true  },
+                { ico:"🔒", name:"NordVPN",         desc:"Secure on hostel WiFi",       color:"#4687ff", url:"https://nordvpn.tpk.ro/T31UJ2Gs",       tracked:true  },
+                { ico:"🛡️", name:"AirHelp",         desc:"Claim flight compensation",   color:"#e63946", url:"https://airhelp.tpk.ro/sv4awXuZ",       tracked:true  },
+                { ico:"🚖", name:"Welcome Pickups", desc:"Reliable airport transfers",  color:"#1a9e6e", url:"https://tpk.ro/LWp4zUOj",               tracked:true  },
+                { ico:"🚕", name:"Kiwitaxi",        desc:"Transfers in 100+ countries", color:"#d4a800", url:"https://kiwitaxi.tpk.ro/hZm8E5GW",      tracked:true  },
+                { ico:"🧳", name:"Radical Storage", desc:"Luggage storage in the city", color:"#f5a623", url:"https://radicalstorage.tpk.ro/5hC6QiSS", tracked:true  },
               ].map((s, i) => (
-                <a key={i} href={s.url} target="_blank" rel="noopener noreferrer" style={{ background: "var(--white)", border: "1.5px solid var(--border)", borderLeft: `3px solid ${s.color}`, padding: "0.75rem 0.85rem", display: "flex", flexDirection: "column", gap: "0.25rem", textDecoration: "none" }}>
-                  <span style={{ fontSize: "1rem" }}>{s.ico}</span>
-                  <span style={{ fontFamily: "var(--ff)", fontWeight: 700, fontSize: "0.82rem", color: "var(--ink)" }}>{s.name}</span>
-                  <span style={{ fontFamily: "var(--fm)", fontSize: "0.58rem", color: "var(--muted)" }}>{s.desc}</span>
+                <a key={i} href={s.url} target="_blank" rel="noopener noreferrer" style={{ background:"var(--white)", border:"1.5px solid var(--border)", borderLeft:`3px solid ${s.color}`, padding:"0.85rem 1rem", display:"flex", flexDirection:"column", gap:"0.2rem", textDecoration:"none", position:"relative" }}>
+                  <span style={{ position:"absolute", top:"0.45rem", right:"0.45rem", fontFamily:"var(--fm)", fontSize:"0.42rem", letterSpacing:"0.06em", textTransform:"uppercase", padding:"0.15rem 0.35rem", borderRadius:"2px", background: s.tracked ? "#e8f5e9" : "var(--sand)", color: s.tracked ? "#2e7d32" : "var(--muted)" }}>{s.tracked ? "✓ affiliate" : "soon tracked"}</span>
+                  <span style={{ fontSize:"1.3rem", lineHeight:1, marginBottom:"0.25rem" }}>{s.ico}</span>
+                  <span style={{ fontFamily:"var(--fm)", fontWeight:700, fontSize:"0.72rem", color:"var(--ink)" }}>{s.name}</span>
+                  <span style={{ fontFamily:"var(--fm)", fontSize:"0.58rem", color:"var(--muted)", lineHeight:1.5 }}>{s.desc}</span>
                 </a>
               ))}
             </div>
