@@ -45,10 +45,11 @@ const css = `
     padding: calc(var(--safe-top) + 1rem) 1.5rem 1rem;
     display: flex; align-items: center; justify-content: space-between;
     border-bottom: 1.5px solid var(--border);
-    position: sticky; top: 0; z-index: 200;
-    background: rgba(250,247,242,0.94);
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    background: rgba(250,247,242,0.96);
     backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   }
+  .hdr-spacer { height: calc(var(--safe-top) + 3.8rem); }
   .logo { font-family: var(--ff); font-size: 1.4rem; font-weight: 900; letter-spacing: -0.03em; color: var(--ink); text-decoration: none; }
   .logo em { font-style: italic; color: var(--rust); }
   .hdr-right { display: flex; align-items: center; gap: 0.6rem; }
@@ -523,6 +524,7 @@ function PrivacyPage({ onBack }) {
       <header className="hdr">
         <div className="logo" onClick={onBack} style={{cursor:"pointer"}}>Hopp<em>Away</em></div>
       </header>
+      <div className="hdr-spacer" />
       <div className="legal-wrap">
         <button className="legal-back" onClick={onBack}>← Back to app</button>
         <div className="legal-eyebrow">Legal</div>
@@ -607,6 +609,7 @@ function TermsPage({ onBack }) {
       <header className="hdr">
         <div className="logo" onClick={onBack} style={{cursor:"pointer"}}>Hopp<em>Away</em></div>
       </header>
+      <div className="hdr-spacer" />
       <div className="legal-wrap">
         <button className="legal-back" onClick={onBack}>← Back to app</button>
         <div className="legal-eyebrow">Legal</div>
@@ -887,6 +890,7 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
           )}
         </div>
       </header>
+      <div className="hdr-spacer" />
 
       {/* MARQUEE — always visible */}
       <div className="marquee-wrap">
