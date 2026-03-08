@@ -317,6 +317,32 @@ const css = `
   .tip { display: flex; gap: 0.6rem; margin-bottom: 0.6rem; font-size: 0.82rem; line-height: 1.65; color: var(--brown); }
   .tip-arr { color: var(--rust); flex-shrink: 0; font-family: var(--fm); font-size: 0.78rem; }
 
+  /* ─── HOW IT WORKS STRIP ─── */
+  .hiw-strip { background: var(--sand); border-top: 1.5px solid var(--border); border-bottom: 1.5px solid var(--border); padding: 1.2rem 1.5rem; max-width: 100%; margin-bottom: 2rem; }
+  .hiw-strip-title { font-family: var(--fm); font-size: 0.5rem; color: var(--rust); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.35rem; }
+  .hiw-strip-title::before { content: '◆'; font-size: 0.38rem; }
+  .hiw-strip-steps { display: flex; position: relative; max-width: 700px; margin: 0 auto; }
+  .hiw-strip-steps::before { content: ''; position: absolute; top: 0.68rem; left: 0.7rem; right: 0.7rem; height: 1px; background: var(--border); z-index: 0; }
+  .hiw-strip-step { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.45rem; position: relative; z-index: 1; }
+  .hiw-strip-n { width: 1.4rem; height: 1.4rem; background: var(--rust); color: white; font-family: var(--fm); font-size: 0.55rem; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid var(--sand); }
+  .hiw-strip-step strong { font-family: var(--ff); font-size: 0.72rem; color: var(--ink); display: block; line-height: 1.2; }
+  .hiw-strip-step span { font-family: var(--fm); font-size: 0.46rem; color: var(--muted); line-height: 1.5; }
+
+  /* ─── TRAVELING AS / PACE / STYLE ─── */
+  .new-badge { font-family: var(--fm); font-size: 0.42rem; background: var(--yellow); color: var(--ink); padding: 0.15rem 0.35rem; font-weight: 700; border: 1px solid var(--ink); vertical-align: middle; margin-left: 0.3rem; }
+  .who-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; margin-bottom: 0.3rem; }
+  .who-chip { font-family: var(--fm); font-size: 0.62rem; padding: 0.65rem 0.5rem; border: 1.5px solid var(--border); background: var(--sand); color: var(--muted); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 0.3rem; text-align: center; user-select: none; transition: all .12s; -webkit-tap-highlight-color: transparent; }
+  .who-chip .wico { font-size: 1.2rem; }
+  .who-chip.on { background: var(--teal); border-color: var(--ink); color: #fff; font-weight: 700; box-shadow: 2px 2px 0 var(--ink); }
+  .pace-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; margin-bottom: 0.3rem; }
+  .pace-chip { font-family: var(--fm); font-size: 0.58rem; padding: 0.55rem 0.4rem; border: 1.5px solid var(--border); background: var(--sand); color: var(--muted); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 0.25rem; text-align: center; user-select: none; transition: all .12s; -webkit-tap-highlight-color: transparent; }
+  .pace-chip .pico { font-size: 1rem; }
+  .pace-chip .psub { font-size: 0.46rem; opacity: 0.7; }
+  .pace-chip.on { background: var(--yellow); border-color: var(--ink); color: var(--ink); font-weight: 700; box-shadow: 2px 2px 0 var(--ink); }
+  .style-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; margin-bottom: 0.3rem; }
+  .style-chip { font-family: var(--fm); font-size: 0.6rem; padding: 0.5rem 0.65rem; border: 1.5px solid var(--border); background: var(--sand); color: var(--muted); cursor: pointer; display: flex; align-items: center; gap: 0.4rem; user-select: none; transition: all .12s; -webkit-tap-highlight-color: transparent; }
+  .style-chip.on { background: var(--rust); border-color: var(--ink); color: #fff; font-weight: 700; box-shadow: 2px 2px 0 var(--ink); }
+
   /* ─── HOW IT WORKS ─── */
   .how-section { max-width: 700px; margin: 0 auto; padding: 0 1.5rem 3rem; }
   .sec-eyebrow { font-family: var(--fm); font-size: 0.58rem; color: var(--rust); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.7rem; display: flex; align-items: center; gap: 0.5rem; }
@@ -476,6 +502,9 @@ export default function HoppAway() {
   const [form, setForm] = useState({ destination: "", days: "7", budget: "500", currency: "EUR", from: "", stops: "2" });
   const [useCustom, setUseCustom] = useState(false);
   const [customStops, setCustomStops] = useState("");
+  const [travelingAs, setTravelingAs] = useState("solo");
+  const [pace, setPace] = useState("normal");
+  const [travelStyle, setTravelStyle] = useState([]);
   const [loading, setLoading] = useState(false);
   const [regenLoading, setRegenLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -498,7 +527,10 @@ export default function HoppAway() {
     const lockedCtx = lockedDays.length > 0
       ? `\n\nFIXED DAYS (keep these exactly):\n${lockedDays.map(d => `- Day ${d.day}: ${d.title} | sleep: ${d.accommodation} | food: ${d.food} | transport: ${d.transport} | do: ${d.activities}`).join("\n")}`
       : "";
-    return `You are HoppAway, a budget backpacker trip planner. Generate a ${form.days}-day itinerary for a backpacker going to ${form.destination}${form.from ? ` from ${form.from}` : ""}, total budget ${form.budget} ${form.currency}.
+    const whoCtx = travelingAs === "solo" ? "solo traveler" : travelingAs === "couple" ? "couple traveling together" : "group of friends";
+    const paceCtx = pace === "chill" ? "relaxed pace (2-3 activities/day, plenty of downtime)" : pace === "intense" ? "packed schedule (maximize sights and experiences each day)" : "balanced pace (4-5 activities/day, mix of planned and free time)";
+    const styleCtx = travelStyle.length > 0 ? `Travel style preferences: ${travelStyle.join(", ")}.` : "";
+    return `You are HoppAway, a budget backpacker trip planner. Generate a ${form.days}-day itinerary for a ${whoCtx} going to ${form.destination}${form.from ? ` from ${form.from}` : ""}, total budget ${form.budget} ${form.currency}. Pace: ${paceCtx}. ${styleCtx}
 
 DESTINATION TYPE — critical:
 - If "${form.destination}" is a SINGLE CITY (e.g. "Tokyo", "Rome", "Bangkok", "Chiang Mai"): ignore the stops count. Organize by NEIGHBORHOODS or ZONES within that city. Each day explores a different area/quarter. The "title" field = neighborhood name (e.g. "Asakusa & Ueno"), not a different city.
@@ -678,6 +710,28 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
             </div>
           </div>
 
+          {/* HOW IT WORKS STRIP */}
+          <div className="hiw-strip">
+            <div className="hiw-strip-title">How it works</div>
+            <div className="hiw-strip-steps">
+              <div className="hiw-strip-step">
+                <div className="hiw-strip-n">1</div>
+                <strong>Enter trip</strong>
+                <span>Destination, days, budget</span>
+              </div>
+              <div className="hiw-strip-step">
+                <div className="hiw-strip-n">2</div>
+                <strong>AI plans it</strong>
+                <span>Hostels, transport, food</span>
+              </div>
+              <div className="hiw-strip-step">
+                <div className="hiw-strip-n">3</div>
+                <strong>Tweak & go</strong>
+                <span>Lock days, regen rest</span>
+              </div>
+            </div>
+          </div>
+
           <div className="form-wrap">
             <div className="fcard">
               <span className="fcard-label">Your trip</span>
@@ -732,6 +786,62 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
                 </div>
               )}
               <div className="stops-hint">Single city? AI organizes by neighborhood instead of stops.</div>
+
+              <hr className="fdivider" />
+
+              {/* TRAVELING AS */}
+              <div className="stops-label">Traveling as <span className="new-badge">NEW</span></div>
+              <div className="who-row">
+                {[
+                  { id:"solo", icon:"🎒", label:"Solo" },
+                  { id:"couple", icon:"👫", label:"Couple" },
+                  { id:"group", icon:"👥", label:"Group" },
+                ].map(w => (
+                  <div key={w.id} className={`who-chip ${travelingAs === w.id ? "on" : ""}`} onClick={() => setTravelingAs(w.id)}>
+                    <span className="wico">{w.icon}</span>{w.label}
+                  </div>
+                ))}
+              </div>
+
+              <hr className="fdivider" />
+
+              {/* PACE */}
+              <div className="stops-label">Pace <span className="new-badge">NEW</span></div>
+              <div className="pace-row">
+                {[
+                  { id:"chill", icon:"🌿", label:"Chill", sub:"2–3 things/day" },
+                  { id:"normal", icon:"⚖️", label:"Normal", sub:"4–5 things/day" },
+                  { id:"intense", icon:"⚡", label:"Intense", sub:"see everything" },
+                ].map(p => (
+                  <div key={p.id} className={`pace-chip ${pace === p.id ? "on" : ""}`} onClick={() => setPace(p.id)}>
+                    <span className="pico">{p.icon}</span>{p.label}
+                    <span className="psub">{p.sub}</span>
+                  </div>
+                ))}
+              </div>
+
+              <hr className="fdivider" />
+
+              {/* TRAVEL STYLE */}
+              <div className="stops-label">Travel style <span className="new-badge">NEW</span></div>
+              <div className="stops-hint" style={{marginBottom:"0.6rem"}}>Optional — select one or more</div>
+              <div className="style-grid">
+                {[
+                  { id:"backpacker", icon:"🎒", label:"Backpacker" },
+                  { id:"trekking", icon:"🥾", label:"Trekking" },
+                  { id:"culture", icon:"🏛️", label:"Culture" },
+                  { id:"food", icon:"🍜", label:"Food & local" },
+                  { id:"nightlife", icon:"🎉", label:"Nightlife" },
+                  { id:"luxury", icon:"✨", label:"Comfort/luxury" },
+                ].map(s => (
+                  <div key={s.id} className={`style-chip ${travelStyle.includes(s.id) ? "on" : ""}`}
+                    onClick={() => setTravelStyle(p => p.includes(s.id) ? p.filter(x => x !== s.id) : [...p, s.id])}>
+                    <span>{s.icon}</span>{s.label}
+                  </div>
+                ))}
+              </div>
+
+              <hr className="fdivider" />
 
               <div style={{
                 background: "#fffbf0", border: "1.5px solid rgba(245,200,66,.4)",
