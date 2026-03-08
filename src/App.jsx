@@ -345,6 +345,9 @@ const css = `
   .style-chip { font-family: var(--fm); font-size: 0.6rem; padding: 0.5rem 0.65rem; border: 1.5px solid var(--border); background: var(--sand); color: var(--muted); cursor: pointer; display: flex; align-items: center; gap: 0.4rem; user-select: none; transition: all .12s; -webkit-tap-highlight-color: transparent; }
   .style-chip.on { background: var(--rust); border-color: var(--ink); color: #fff; font-weight: 700; box-shadow: 2px 2px 0 var(--ink); }
 
+  .book-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  @media (min-width: 480px) { .book-grid { grid-template-columns: 1fr 1fr 1fr; } }
+
   /* ─── HOW IT WORKS ─── */
   .how-section { max-width: 700px; margin: 0 auto; padding: 0 1.5rem 3rem; }
   .sec-eyebrow { font-family: var(--fm); font-size: 0.58rem; color: var(--rust); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.7rem; display: flex; align-items: center; gap: 0.5rem; }
@@ -1114,7 +1117,7 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
             <div className="sec-eyebrow">Book everything</div>
             <h2 className="sec-title">From itinerary<br />to packed bag.</h2>
             <p className="sec-sub">Every itinerary comes with direct links to book flights, hostels, tours, insurance and eSIM — all in one place.</p>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0.5rem" }}>
+            <div className="book-grid">
               {[
                 { ico:"✈️", name:"Skyscanner", desc:"Cheapest flights", color:"#00a1e4" },
                 { ico:"🛏️", name:"Hostelworld", desc:"Best backpacker hostels", color:"#ff6600" },
