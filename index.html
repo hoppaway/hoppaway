@@ -6,9 +6,40 @@
     <meta name="description" content="HoppAway — AI trip planner for budget backpackers. Real hostels, exact trains, local food. Full itinerary in seconds." />
     <title>HoppAway — Hop. Plan. Go.</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { background: #faf7f2; }
+      #splash {
+        position: fixed; inset: 0; z-index: 99999;
+        background: #faf7f2;
+        display: flex; align-items: center; justify-content: center;
+      }
+      #splash-logo {
+        font-family: Georgia, serif;
+        font-size: 2rem; font-weight: 700;
+        color: #1a1208; letter-spacing: -0.03em;
+      }
+      #splash-logo span { color: #c94f1e; font-style: italic; }
+    </style>
   </head>
-  <body style="margin:0;background:#faf7f2">
+  <body>
+    <div id="splash">
+      <div id="splash-logo">Hopp<span>Away</span></div>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+      // Remove splash once React has rendered
+      document.addEventListener('DOMContentLoaded', function() {
+        var observer = new MutationObserver(function() {
+          if (document.getElementById('root').children.length > 0) {
+            var splash = document.getElementById('splash');
+            if (splash) splash.remove();
+            observer.disconnect();
+          }
+        });
+        observer.observe(document.getElementById('root'), { childList: true });
+      });
+    </script>
   </body>
 </html>
