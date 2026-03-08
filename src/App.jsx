@@ -318,9 +318,8 @@ const css = `
   .tip-arr { color: var(--rust); flex-shrink: 0; font-family: var(--fm); font-size: 0.78rem; }
 
   /* ─── HOW IT WORKS STRIP ─── */
-  .hiw-strip { padding: 0 1.5rem 0; max-width: 700px; margin: 0 auto 2rem; }
+  .hiw-strip { padding: 0 1.5rem 0; max-width: 860px; margin: 0 auto 2rem; }
   .hiw-strip-inner { background: var(--sand); border: 1.5px solid var(--border); padding: 1.2rem 1.5rem; }
-
   .hiw-strip-title { font-family: var(--fm); font-size: 0.5rem; color: var(--rust); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.35rem; }
   .hiw-strip-title::before { content: '◆'; font-size: 0.38rem; }
   .hiw-strip-steps { display: flex; position: relative; max-width: 700px; margin: 0 auto; }
@@ -904,7 +903,6 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
       {view === "form" && !loading && (
         <>
           <div className="hero-wrap">
-            <div className="hero-eyebrow">AI-powered budget travel planner</div>
             <h1 className="hero-h1">
               <span className="hop">Hop.</span><br />
               Plan.<br />
