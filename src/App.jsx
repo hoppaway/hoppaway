@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from "react";
+import { Analytics } from "@vercel/analytics/react";
 const FONTS = `@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');`;
 const css = `
   ${FONTS}
@@ -1270,6 +1271,7 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
           </div>
         </div>
       </footer>
+      <Analytics />
     </>
   );
 }
