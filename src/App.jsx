@@ -371,6 +371,25 @@ const css = `
   }
   .disclaimer p { font-family: var(--fm); font-size: 0.62rem; color: var(--brown); line-height: 1.65; }
   .disclaimer strong { color: var(--orange); }
+  /* ─── BUY ME A COFFEE ─── */
+  .bmc-bar {
+    background: #fffbf0; border: 1.5px solid rgba(245,200,66,.5);
+    border-left: 3px solid var(--yellow);
+    padding: 1rem 1.2rem; margin-top: 1rem;
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  }
+  .bmc-text { font-family: var(--fm); font-size: 0.63rem; color: var(--brown); line-height: 1.6; flex: 1; }
+  .bmc-text strong { color: var(--ink); }
+  .btn-bmc {
+    background: var(--yellow); border: 1.5px solid var(--ink); color: var(--ink);
+    padding: 0.55rem 1.1rem; font-family: var(--fm); font-size: 0.68rem; font-weight: 700;
+    cursor: pointer; box-shadow: 2px 2px 0 var(--ink);
+    text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;
+    white-space: nowrap; transition: all .12s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-bmc:hover { box-shadow: 3px 3px 0 var(--ink); }
+  .btn-bmc:active { transform: translate(2px,2px); box-shadow: none; }
   /* ─── ERROR ─── */
   .err-card {
     background: rgba(201,79,30,.06); border: 1.5px solid rgba(201,79,30,.3);
@@ -566,6 +585,7 @@ function PrivacyPage({ onBack }) {
         <div className="footer-row2">
           <span className="footer-tagline">built with ♥ for backpackers</span>
           <div className="footer-links">
+            <a href="https://buymeacoffee.com/hoppaway" target="_blank" rel="noopener noreferrer" style={{color:"var(--yellow)"}}>☕ Support</a>
             <span onClick={onBack} style={{cursor:"pointer"}}>← App</span>
             <span>© 2026</span>
           </div>
@@ -635,6 +655,7 @@ function TermsPage({ onBack }) {
         <div className="footer-row2">
           <span className="footer-tagline">built with ♥ for backpackers</span>
           <div className="footer-links">
+            <a href="https://buymeacoffee.com/hoppaway" target="_blank" rel="noopener noreferrer" style={{color:"var(--yellow)"}}>☕ Support</a>
             <span onClick={onBack} style={{cursor:"pointer"}}>← App</span>
             <span>© 2026</span>
           </div>
@@ -1221,6 +1242,15 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
           <div className="disclaimer">
             <p><strong>⚠ Estimates only.</strong> Prices, availability and conditions change frequently. Always verify before booking. HoppAway is not responsible for discrepancies between estimated and actual costs.</p>
           </div>
+          <div className="bmc-bar">
+            <div className="bmc-text">
+              <strong>☕ Enjoying HoppAway?</strong><br />
+              It's free and always will be. If it helped you plan your trip, a coffee keeps it running!
+            </div>
+            <a className="btn-bmc" href="https://buymeacoffee.com/hoppaway" target="_blank" rel="noopener noreferrer">
+              ☕ Buy me a coffee
+            </a>
+          </div>
         </div>
       )}
       {/* FOOTER */}
@@ -1232,6 +1262,8 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
         <div className="footer-row2">
           <span className="footer-tagline">built with ♥ for backpackers</span>
           <div className="footer-links">
+            <a href="https://buymeacoffee.com/hoppaway" target="_blank" rel="noopener noreferrer" style={{color:"var(--yellow)"}}>☕ Support</a>
+            <span>·</span>
             <span onClick={() => goTo("/privacy")} style={{cursor:"pointer"}}>Privacy</span>
             <span onClick={() => goTo("/terms")} style={{cursor:"pointer"}}>Terms</span>
             <span>© 2026</span>
