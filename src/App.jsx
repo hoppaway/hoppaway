@@ -371,51 +371,6 @@ const css = `
   }
   .disclaimer p { font-family: var(--fm); font-size: 0.62rem; color: var(--brown); line-height: 1.65; }
   .disclaimer strong { color: var(--orange); }
-  /* ─── PACKING LIST ─── */
-  .packing-wrap {
-    background: var(--white); border: 1.5px solid var(--ink);
-    box-shadow: 4px 5px 0 var(--ink); margin-top: 1rem; overflow: hidden;
-  }
-  .packing-head {
-    background: var(--ink); color: var(--sand);
-    padding: 1rem 1.2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
-  }
-  .packing-title { font-family: var(--ff); font-size: 1rem; font-weight: 700; letter-spacing: -0.02em; }
-  .packing-title em { color: var(--yellow); font-style: italic; }
-  .packing-meta { font-family: var(--fm); font-size: 0.5rem; color: rgba(245,240,232,.45); margin-top: 0.2rem; }
-  .packing-toggle { font-family: var(--fm); font-size: 0.58rem; background: transparent; border: 1px solid rgba(245,240,232,.25); color: rgba(245,240,232,.65); padding: 0.3rem 0.7rem; cursor: pointer; transition: all .12s; white-space: nowrap; }
-  .packing-toggle:hover { border-color: var(--yellow); color: var(--yellow); }
-  .packing-body { padding: 1.1rem; }
-  .packing-cat { margin-bottom: 1rem; }
-  .packing-cat:last-child { margin-bottom: 0; }
-  .packing-cat-title { font-family: var(--fm); font-size: 0.5rem; color: var(--rust); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 0.45rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border); }
-  .packing-item { display: flex; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.3rem; }
-  .packing-check { width: 13px; height: 13px; border: 1.5px solid var(--border); flex-shrink: 0; margin-top: 0.15rem; border-radius: 1px; cursor: pointer; transition: all .12s; }
-  .packing-check.checked { background: var(--teal); border-color: var(--teal); }
-  .packing-item-text { font-family: var(--fm); font-size: 0.72rem; color: var(--brown); flex: 1; line-height: 1.5; }
-  .packing-item-text.checked { text-decoration: line-through; opacity: 0.45; }
-  .packing-aff-link { font-family: var(--fm); font-size: 0.5rem; font-weight: 700; padding: 0.14rem 0.42rem; border: 1px solid; text-decoration: none; flex-shrink: 0; white-space: nowrap; display: inline-flex; align-items: center; gap: 0.2rem; transition: opacity .12s; margin-top: 0.08rem; }
-  .packing-aff-link:hover { opacity: 0.75; }
-  .packing-note { font-family: var(--fm); font-size: 0.5rem; color: var(--muted); font-style: italic; padding: 0.6rem 1.1rem; border-top: 1px solid var(--border); }
-  .packing-progress { padding: 0.7rem 1.1rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.8rem; }
-  .packing-progress-bar { flex: 1; height: 3px; background: var(--border); }
-  .packing-progress-fill { height: 3px; background: var(--teal); transition: width .3s ease; }
-  .packing-progress-label { font-family: var(--fm); font-size: 0.5rem; color: var(--muted); white-space: nowrap; }
-  .packing-page { max-width: 680px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
-  .packing-page-eyebrow { font-family: var(--fm); font-size: 0.55rem; color: var(--rust); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.4rem; }
-  .packing-page-eyebrow::before { content: '✦'; font-size: 0.44rem; }
-  .packing-page-h1 { font-family: var(--ff); font-size: clamp(1.9rem, 6vw, 2.8rem); font-weight: 900; line-height: 1.05; letter-spacing: -0.04em; margin-bottom: 0.8rem; }
-  .packing-page-h1 em { font-style: italic; color: var(--rust); }
-  .packing-page-desc { font-family: var(--fm); font-size: 0.72rem; color: var(--muted); line-height: 1.75; max-width: 480px; margin-bottom: 2rem; }
-  .packing-form-card { background: var(--white); border: 1.5px solid var(--ink); box-shadow: 5px 6px 0 var(--ink); padding: 1.8rem; position: relative; margin-bottom: 1.5rem; }
-  .packing-form-label { font-family: var(--fm); font-size: 0.55rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; position: absolute; top: -0.52rem; left: 1.1rem; background: var(--white); padding: 0 0.4rem; }
-  .season-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.3rem; }
-  .season-chip { font-family: var(--fm); font-size: 0.6rem; padding: 0.55rem 0.5rem; border: 1.5px solid var(--border); background: var(--sand); color: var(--muted); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 0.25rem; text-align: center; user-select: none; transition: all .12s; -webkit-tap-highlight-color: transparent; }
-  .season-chip.on { background: var(--teal); border-color: var(--ink); color: #fff; font-weight: 700; box-shadow: 2px 2px 0 var(--ink); }
-  @media (min-width: 600px) {
-    .packing-page { padding: 2rem 2.5rem 4rem; }
-    .season-row { grid-template-columns: repeat(4, 1fr); }
-  }
   /* ─── BUY ME A COFFEE ─── */
   .bmc-bar {
     background: #fffbf0; border: 1.5px solid rgba(245,200,66,.5);
@@ -709,346 +664,11 @@ function TermsPage({ onBack }) {
     </>
   );
 }
-// ─── AFFILIATE LINKS FOR PACKING LIST ───
-const PACKING_AFFS = {
-  esim:    { label: "📱 Airalo", url: "https://airalo.tpk.ro/VimxbpvE",        color: "#ff6b35" },
-  esim2:   { label: "📶 Yesim",  url: "https://yesim.tpk.ro/lWijEzSF",         color: "#f5c842" },
-  vpn:     { label: "🔒 NordVPN",url: "https://nordvpn.tpk.ro/T31UJ2Gs",       color: "#4687ff" },
-  insurance:{ label: "🌍 SafetyWing", url: "https://safetywing.com/?referenceID=26489043&utm_source=26489043&utm_medium=Ambassador", color: "#1d7a6e" },
-  storage: { label: "🧳 Radical Storage", url: "https://radicalstorage.tpk.ro/5hC6QiSS", color: "#f5a623" },
-  transfer:{ label: "🚖 Welcome Pickups", url: "https://tpk.ro/LWp4zUOj",      color: "#1a9e6e" },
-};
-
-function parsePackingList(text) {
-  let clean = text.replace(/```json\s*/gi, "").replace(/```\s*/gi, "").trim();
-  const s = clean.indexOf("{"), e = clean.lastIndexOf("}");
-  if (s !== -1 && e !== -1) clean = clean.slice(s, e + 1);
-  try { return JSON.parse(clean); } catch (_) {}
-  try { return JSON.parse(clean.replace(/,\s*([}\]])/g, "$1")); } catch (_) {}
-  return null;
-}
-
-function PackingListSection({ packingData, destination, days, season }) {
-  const [checked, setChecked] = useState({});
-  const [collapsed, setCollapsed] = useState(false);
-
-  const toggleCheck = (catIdx, itemIdx) => {
-    const key = `${catIdx}-${itemIdx}`;
-    setChecked(p => ({ ...p, [key]: !p[key] }));
-  };
-
-  const allItems = packingData?.categories?.reduce((acc, cat) => acc + cat.items.length, 0) || 0;
-  const checkedCount = Object.values(checked).filter(Boolean).length;
-  const progress = allItems > 0 ? Math.round((checkedCount / allItems) * 100) : 0;
-
-  if (!packingData?.categories?.length) return null;
-
-  return (
-    <div className="packing-wrap">
-      <div className="packing-head">
-        <div>
-          <div className="packing-title">🎒 Packing list for <em>{destination}</em></div>
-          <div className="packing-meta">{days} days · {season} · tap items to check off</div>
-        </div>
-        <button className="packing-toggle" onClick={() => setCollapsed(p => !p)}>
-          {collapsed ? "▼ Show" : "▲ Hide"}
-        </button>
-      </div>
-      {!collapsed && (
-        <>
-          <div className="packing-progress">
-            <div className="packing-progress-bar">
-              <div className="packing-progress-fill" style={{ width: `${progress}%` }} />
-            </div>
-            <span className="packing-progress-label">{checkedCount}/{allItems} packed</span>
-          </div>
-          <div className="packing-body">
-            {packingData.categories.map((cat, ci) => (
-              <div key={ci} className="packing-cat">
-                <div className="packing-cat-title">{cat.icon} {cat.name}</div>
-                {cat.items.map((item, ii) => {
-                  const key = `${ci}-${ii}`;
-                  const isChecked = !!checked[key];
-                  const aff = item.affKey ? PACKING_AFFS[item.affKey] : null;
-                  return (
-                    <div key={ii} className="packing-item">
-                      <div
-                        className={`packing-check ${isChecked ? "checked" : ""}`}
-                        onClick={() => toggleCheck(ci, ii)}
-                      />
-                      <span
-                        className={`packing-item-text ${isChecked ? "checked" : ""}`}
-                        onClick={() => toggleCheck(ci, ii)}
-                        style={{ cursor: "pointer" }}
-                      >
-                        {item.text}
-                      </span>
-                      {aff && !isChecked && (
-                        <a
-                          className="packing-aff-link"
-                          href={aff.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{ color: aff.color, borderColor: aff.color }}
-                          onClick={e => e.stopPropagation()}
-                        >
-                          {aff.label} →
-                        </a>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            ))}
-          </div>
-          <div className="packing-note">✦ AI-generated list — verify requirements for your specific destination before travelling.</div>
-        </>
-      )}
-    </div>
-  );
-}
-
-function buildPackingPrompt(destination, days, season) {
-  return `You are a packing list generator for budget backpackers. Generate a packing list for a backpacker trip to ${destination}, ${days} days, ${season} season.
-
-For each item that naturally pairs with one of these affiliate products, add the exact affKey value:
-- eSIM / local data / connectivity → affKey: "esim"
-- VPN / internet security → affKey: "vpn"  
-- travel insurance / health coverage → affKey: "insurance"
-- luggage storage → affKey: "storage"
-- airport transfer → affKey: "transfer"
-
-Only add affKey when it is a genuinely relevant match. Do not force affiliates onto unrelated items.
-
-Respond ONLY with valid JSON, no markdown:
-{
-  "destination": "string",
-  "season": "string",
-  "categories": [
-    {
-      "icon": "emoji",
-      "name": "Category Name",
-      "items": [
-        { "text": "item description", "affKey": "esim" },
-        { "text": "item description" }
-      ]
-    }
-  ]
-}
-
-Categories to include: 👕 Clothing, 🎒 Bag & gear, 🔌 Tech & connectivity, 💊 Health & meds, 📄 Documents & money, 🛡️ Safety & insurance.
-Adapt clothing to ${season} season in ${destination}. Be specific, not generic. Max 6 items per category.`;
-}
-
-function PackingListPage({ onBack }) {
-  useEffect(() => { window.scrollTo(0, 0); }, []);
-  const [form, setForm] = useState({ destination: "", days: "7" });
-  const [season, setSeason] = useState("dry");
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(null);
-  const [error, setError] = useState(null);
-  const [checked, setChecked] = useState({});
-
-  const handleGenerate = async () => {
-    if (!form.destination) return;
-    setLoading(true); setResult(null); setError(null); setChecked({});
-    try {
-      const res = await fetch("/api/packing", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: buildPackingPrompt(form.destination, form.days, season) })
-      });
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
-      const parsed = parsePackingList(data.text || "");
-      if (parsed) setResult(parsed);
-      else setError("Couldn't generate the list. Please try again.");
-    } catch (e) { setError("Something went wrong. Check your connection."); }
-    finally { setLoading(false); }
-  };
-
-  const toggleCheck = (catIdx, itemIdx) => {
-    const key = `${catIdx}-${itemIdx}`;
-    setChecked(p => ({ ...p, [key]: !p[key] }));
-  };
-
-  const allItems = result?.categories?.reduce((acc, cat) => acc + cat.items.length, 0) || 0;
-  const checkedCount = Object.values(checked).filter(Boolean).length;
-  const progress = allItems > 0 ? Math.round((checkedCount / allItems) * 100) : 0;
-
-  const seasonLabels = { dry: "Dry season", wet: "Wet / rainy", summer: "Summer", winter: "Winter" };
-
-  return (
-    <>
-      <style>{css}{legalCss}</style>
-      <header className="hdr">
-        <div className="logo" onClick={onBack} style={{ cursor: "pointer" }}>Hopp<em>Away</em></div>
-        <div className="hdr-right">
-          <button className="hdr-back" onClick={onBack}>← Trip planner</button>
-        </div>
-      </header>
-      <div className="hdr-spacer" />
-      <div className="marquee-wrap">
-        <div className="marquee-track">
-          {["Hanoi → Hue night train $18","Hostel dorm €12/night Lisbon","Tuk-tuk Phnom Penh $1/ride","Overnight bus Buenos Aires → Mendoza $22","Dosa breakfast $0.80 Chennai","Ferry Split → Hvar €10","Hostel Kathmandu $5/night","Metro day pass Prague €4",
-            "Hanoi → Hue night train $18","Hostel dorm €12/night Lisbon","Tuk-tuk Phnom Penh $1/ride","Overnight bus Buenos Aires → Mendoza $22","Dosa breakfast $0.80 Chennai","Ferry Split → Hvar €10","Hostel Kathmandu $5/night","Metro day pass Prague €4"
-          ].map((t, i) => (
-            <span key={i}>{t}{i % 8 !== 7 ? <span className="dot"> ✦ </span> : null}</span>
-          ))}
-        </div>
-      </div>
-
-      <div className="packing-page">
-        <div className="packing-page-eyebrow">Free tool</div>
-        <h1 className="packing-page-h1">
-          AI packing list<br />for <em>backpackers</em>
-        </h1>
-        <p className="packing-page-desc">
-          Tell us where you're going and when — get a tailored packing list in seconds. Adapted to your destination, season and duration.
-        </p>
-
-        <div className="packing-form-card">
-          <span className="packing-form-label">Your trip</span>
-          <div className="fgrid">
-            <div className="fg full">
-              <label>Where are you going?</label>
-              <input
-                type="text" placeholder="Vietnam, Thailand, Portugal..."
-                value={form.destination}
-                onChange={e => setForm(p => ({ ...p, destination: e.target.value }))}
-                autoCapitalize="words" autoCorrect="off"
-              />
-            </div>
-            <div className="fg">
-              <label>Days</label>
-              <input
-                type="number" inputMode="numeric" min="1" max="90" placeholder="7"
-                value={form.days}
-                onChange={e => setForm(p => ({ ...p, days: e.target.value }))}
-              />
-            </div>
-          </div>
-          <hr className="fdivider" />
-          <div className="stops-label">Season</div>
-          <div className="season-row">
-            {[
-              { id: "dry",    icon: "☀️", label: "Dry season" },
-              { id: "wet",    icon: "🌧️", label: "Wet / rainy" },
-              { id: "summer", icon: "🌞", label: "Summer" },
-              { id: "winter", icon: "❄️", label: "Winter" },
-            ].map(s => (
-              <div key={s.id} className={`season-chip ${season === s.id ? "on" : ""}`} onClick={() => setSeason(s.id)}>
-                <span style={{ fontSize: "1.1rem" }}>{s.icon}</span>{s.label}
-              </div>
-            ))}
-          </div>
-          <button
-            className="btn-gen"
-            onClick={handleGenerate}
-            disabled={!form.destination || loading}
-            style={{ marginTop: "1rem" }}
-          >
-            {loading ? "Generating…" : "Generate my packing list →"}
-          </button>
-          {error && <div className="err-card">⚠ {error}</div>}
-        </div>
-
-        {loading && (
-          <div style={{ textAlign: "center", padding: "2rem 0" }}>
-            <div className="spinner" style={{ margin: "0 auto 1rem" }} />
-            <div style={{ fontFamily: "var(--fm)", fontSize: "0.7rem", color: "var(--muted)" }}>
-              Building your packing list for {form.destination}…
-            </div>
-          </div>
-        )}
-
-        {result && !loading && (
-          <>
-            <div className="packing-wrap">
-              <div className="packing-head">
-                <div>
-                  <div className="packing-title">🎒 Packing list for <em>{result.destination}</em></div>
-                  <div className="packing-meta">{form.days} days · {seasonLabels[season]} · tap items to check off</div>
-                </div>
-              </div>
-              <div className="packing-progress">
-                <div className="packing-progress-bar">
-                  <div className="packing-progress-fill" style={{ width: `${progress}%` }} />
-                </div>
-                <span className="packing-progress-label">{checkedCount}/{allItems} packed</span>
-              </div>
-              <div className="packing-body">
-                {result.categories.map((cat, ci) => (
-                  <div key={ci} className="packing-cat">
-                    <div className="packing-cat-title">{cat.icon} {cat.name}</div>
-                    {cat.items.map((item, ii) => {
-                      const key = `${ci}-${ii}`;
-                      const isChecked = !!checked[key];
-                      const aff = item.affKey ? PACKING_AFFS[item.affKey] : null;
-                      return (
-                        <div key={ii} className="packing-item">
-                          <div className={`packing-check ${isChecked ? "checked" : ""}`} onClick={() => toggleCheck(ci, ii)} />
-                          <span
-                            className={`packing-item-text ${isChecked ? "checked" : ""}`}
-                            onClick={() => toggleCheck(ci, ii)}
-                            style={{ cursor: "pointer" }}
-                          >{item.text}</span>
-                          {aff && !isChecked && (
-                            <a
-                              className="packing-aff-link"
-                              href={aff.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              style={{ color: aff.color, borderColor: aff.color }}
-                              onClick={e => e.stopPropagation()}
-                            >{aff.label} →</a>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                ))}
-              </div>
-              <div className="packing-note">✦ AI-generated — verify entry requirements and health recommendations for your destination.</div>
-            </div>
-
-            <div className="bmc-bar" style={{ marginTop: "1rem" }}>
-              <div className="bmc-text">
-                <strong>☕ Enjoying HoppAway?</strong><br />
-                Free tools like this take time to build. A coffee helps!
-              </div>
-              <a className="btn-bmc" href="https://buymeacoffee.com/hoppaway" target="_blank" rel="noopener noreferrer">
-                ☕ Buy me a coffee
-              </a>
-            </div>
-          </>
-        )}
-      </div>
-
-      <footer className="footer">
-        <div className="footer-row1">
-          <div className="footer-logo">Hopp<em>Away</em></div>
-          <a href="mailto:hello@hoppaway.app" className="footer-email">hello@hoppaway.app</a>
-        </div>
-        <div className="footer-row2">
-          <span className="footer-tagline">built with ♥ for backpackers</span>
-          <div className="footer-links">
-            <a href="https://buymeacoffee.com/hoppaway" target="_blank" rel="noopener noreferrer" style={{ color: "var(--yellow)" }}>☕ Support</a>
-            <span onClick={onBack} style={{ cursor: "pointer" }}>← App</span>
-            <span>© 2026</span>
-          </div>
-        </div>
-      </footer>
-    </>
-  );
-}
-
 export default function HoppAway() {
   const [page, setPage] = useState(() => {
     const p = window.location.pathname;
     if (p === "/privacy") return "privacy";
     if (p === "/terms") return "terms";
-    if (p === "/packing-list") return "packing";
     return "app";
   });
   useEffect(() => {
@@ -1056,7 +676,6 @@ export default function HoppAway() {
       const p = window.location.pathname;
       if (p === "/privacy") setPage("privacy");
       else if (p === "/terms") setPage("terms");
-      else if (p === "/packing-list") setPage("packing");
       else setPage("app");
     };
     window.addEventListener("popstate", handler);
@@ -1066,12 +685,10 @@ export default function HoppAway() {
     window.history.pushState({}, "", path);
     if (path === "/privacy") setPage("privacy");
     else if (path === "/terms") setPage("terms");
-    else if (path === "/packing-list") setPage("packing");
     else setPage("app");
   };
   if (page === "privacy") return <PrivacyPage onBack={() => goTo("/")} />;
   if (page === "terms") return <TermsPage onBack={() => goTo("/")} />;
-  if (page === "packing") return <PackingListPage onBack={() => goTo("/")} />;
   return <AppMain goTo={goTo} />;
 }
 function AppMain({ goTo }) {
@@ -1101,7 +718,6 @@ function AppMain({ goTo }) {
   const [error, setError] = useState(null);
   const [view, setView] = useState("form");
   const [loadStep, setLoadStep] = useState(0);
-  const [packingData, setPackingData] = useState(null);
   const dragIdx = useRef(null);
   const [dragOver, setDragOver] = useState(null);
   const touchIdx = useRef(null);
@@ -1142,24 +758,12 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
   };
   const handleGenerate = async () => {
     if (!form.destination || !form.days || !form.budget) return;
-    setLoading(true); setResult(null); setItinerary([]); setLocked(new Set()); setError(null); setPackingData(null);
+    setLoading(true); setResult(null); setItinerary([]); setLocked(new Set()); setError(null);
     try {
       const parsed = await callAPI(buildPrompt());
       if (parsed) {
         setResult(parsed); setItinerary(parsed.itinerary || []);
         setOpen({ 0: true }); setView("result");
-        // generate packing list in background
-        const season = "dry"; // default, could be derived from dates later
-        fetch("/api/packing", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt: buildPackingPrompt(form.destination, form.days, season) })
-        }).then(r => r.json()).then(data => {
-          if (data.text) {
-            const pl = parsePackingList(data.text);
-            if (pl) setPackingData(pl);
-          }
-        }).catch(() => {}); // silent fail — packing list is non-critical
       } else setError("Couldn't parse the itinerary. Please try again.");
     } catch (e) { setError("Something went wrong. Check your connection."); }
     finally { setLoading(false); }
@@ -1236,7 +840,7 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
   };
   const budgetLeft = result ? result.totalBudget - result.estimatedTotal : 0;
   const handleBack = () => {
-    setView("form"); setResult(null); setItinerary([]); setLocked(new Set()); setError(null); setPackingData(null);
+    setView("form"); setResult(null); setItinerary([]); setLocked(new Set()); setError(null);
   };
   return (
     <>
@@ -1245,6 +849,9 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
       <header className={`hdr${headerHidden ? " hidden" : ""}`}>
         <div className="logo" onClick={() => { if(view==="result") handleBack(); }} style={{cursor: view==="result" ? "pointer" : "default"}}>Hopp<em>Away</em></div>
         <div className="hdr-right">
+          {view !== "result" && (
+            <button className="hdr-back" onClick={() => goTo("/packing-list")}>🎒 Packing list</button>
+          )}
           {view === "result" && (
             <button className="hdr-back" onClick={handleBack}>← New trip</button>
           )}
@@ -1632,19 +1239,6 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
               ))}
             </div>
           )}
-          {packingData && (
-            <PackingListSection
-              packingData={packingData}
-              destination={result.destination}
-              days={result.days}
-              season="dry"
-            />
-          )}
-          {!packingData && (
-            <div style={{ fontFamily:"var(--fm)", fontSize:"0.58rem", color:"var(--muted)", textAlign:"center", padding:"0.8rem", marginTop:"1rem", border:"1px dashed var(--border)", fontStyle:"italic" }}>
-              🎒 Generating your packing list…
-            </div>
-          )}
           <div className="aff-section" style={{ padding: 0, marginTop: "1.5rem" }}>
             <AffiliateSection destination={result.destination} from={form.from} />
           </div>
@@ -1673,7 +1267,6 @@ The "location" field = city/area name (e.g. "Hội An, Vietnam" or "Asakusa, Tok
           <div className="footer-links">
             <a href="https://buymeacoffee.com/hoppaway" target="_blank" rel="noopener noreferrer" style={{color:"var(--yellow)"}}>☕ Support</a>
             <span>·</span>
-            <span onClick={() => goTo("/packing-list")} style={{cursor:"pointer"}}>Packing list</span>
             <span onClick={() => goTo("/privacy")} style={{cursor:"pointer"}}>Privacy</span>
             <span onClick={() => goTo("/terms")} style={{cursor:"pointer"}}>Terms</span>
             <span>© 2026</span>
